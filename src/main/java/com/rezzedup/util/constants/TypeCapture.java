@@ -30,7 +30,6 @@ public abstract class TypeCapture<T>
     protected TypeCapture(Type type)
     {
         Objects.requireNonNull(type, "type");
-        
         this.type = type;
         this.raw = resolveRawType(type);
         this.generics = resolveGenericParameters(type);
