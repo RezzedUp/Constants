@@ -46,13 +46,13 @@ public abstract class TypeCapture<T>
         this.hashCode = type.hashCode();
     }
     
-    public final Type getType() { return type; }
+    public final Type type() { return type; }
     
-    public final Class<? super T> getRawType() { return raw; }
+    public final Class<? super T> raw() { return raw; }
+    
+    public final List<TypeCapture<?>> generics() { return generics; }
     
     public final boolean isGeneric() { return !generics.isEmpty(); }
-    
-    public final List<TypeCapture<?>> getGenericParameters() { return generics; }
     
     public final boolean isWildcard() { return type instanceof WildcardType; }
     
