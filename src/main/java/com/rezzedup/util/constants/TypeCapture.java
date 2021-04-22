@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public abstract class TypeCapture<T>
+public abstract class TypeCapture<T> implements TypeCompatible<T>
 {
     public static <T> TypeCapture<T> type(Class<T> type)
     {
@@ -45,7 +45,12 @@ public abstract class TypeCapture<T>
         this.hashCode = type.hashCode();
     }
     
+    @Override
     public final Type type() { return type; }
+    
+    @Deprecated
+    @Override
+    public final TypeCapture<T> capture() { return this; }
     
     public final Class<? super T> raw() { return raw; }
     
