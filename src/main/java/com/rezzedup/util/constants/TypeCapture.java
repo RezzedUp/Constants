@@ -112,7 +112,7 @@ public abstract class TypeCapture<T>
         return List.copyOf(resolved);
     }
     
-    private static final class Captured<T> extends TypeCapture<T>
+    static final class Captured<T> extends TypeCapture<T>
     {
         Captured(Type type) { super(type); }
     }
