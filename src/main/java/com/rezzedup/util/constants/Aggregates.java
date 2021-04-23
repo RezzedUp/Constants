@@ -1,11 +1,9 @@
 package com.rezzedup.util.constants;
 
+import com.rezzedup.util.constants.annotations.Aggregated;
+import com.rezzedup.util.constants.except.AggregationException;
 import pl.tlinkowski.annotation.basic.NullOr;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -14,40 +12,39 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
+import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
 public class Aggregates
 {
     private Aggregates() { throw new UnsupportedOperationException(); }
     
-    public static final MatchRules ALL = matching().any();
+    private static final MatchRules ALL = new MatchRules();
     
-    public static MatchRules matching()
+    public static MatchRules matching() { return ALL; }
+    
+    private static boolean fieldHasSkipAnnotation(Field field)
     {
-        return new MatchRules();
+        return field.isAnnotationPresent(Aggregated.class)
+            || field.isAnnotationPresent(Aggregated.Result.class)
+            || field.isAnnotationPresent(Aggregated.Skip.class);
     }
     
-    @SuppressWarnings("unchecked")
-    private static <T> Optional<T> cast(TypeCapture<? extends T> type, Object object)
+    public static <T> void visit(Class<?> source, TypeCompatible<T> type, MatchRules rules, BiConsumer<String, T> consumer)
     {
-        return (type.raw().isAssignableFrom(object.getClass())) ? Optional.of((T) object) : Optional.empty();
-    }
-    
-    private static <T, C extends Collection<T>> C collect(Class<?> clazz, TypeCapture<? extends T> type, Supplier<C> constructor, MatchRules rules)
-    {
-        Objects.requireNonNull(clazz, "clazz");
-        Objects.requireNonNull(constructor, "constructor");
+        Objects.requireNonNull(source, "source");
+        Objects.requireNonNull(type, "type");
         Objects.requireNonNull(rules, "rules");
+        Objects.requireNonNull(consumer, "consumer");
         
-        C collection = Objects.requireNonNull(constructor.get(), "constructor returned null");
+        TypeCapture<T> capture = type.capture();
         
-        for (Field field : clazz.getDeclaredFields())
+        for (Field field : source.getDeclaredFields())
         {
             if (!Modifier.isStatic(field.getModifiers())) { continue; }
             if (!rules.matches(field.getName())) { continue; }
-            if (field.isAnnotationPresent(Result.class)) { continue; }
+            if (fieldHasSkipAnnotation(field)) { continue; }
             
             field.setAccessible(true);
             
@@ -56,94 +53,112 @@ public class Aggregates
                 @NullOr Object value = field.get(null);
                 if (value == null) { continue; }
                 
-                if (value instanceof Collection)
+                if (value instanceof Collection && rules.isVisitingCollectionsAllowed())
                 {
                     ((Collection<?>) value).stream()
-                        .flatMap(element -> cast(type, element).stream())
-                        .forEach(collection::add);
+                        .flatMap(element -> TypeCompatible.unsafeRawTypeCast(capture, element).stream())
+                        .forEach(element -> consumer.accept(field.getName(), element));
                 }
                 else
                 {
-                    cast(type, value).ifPresent(collection::add);
+                    TypeCompatible.unsafeRawTypeCast(capture, value)
+                        .ifPresent(element -> consumer.accept(field.getName(), element));
                 }
             }
-            catch (IllegalAccessException e) { e.printStackTrace(); }
+            catch (IllegalAccessException e) { throw new AggregationException(e); }
         }
-        
+    }
+    
+    private static <T, C extends Collection<T>> C collect(Class<?> source, TypeCompatible<T> type, MatchRules rules, Supplier<C> constructor)
+    {
+        Objects.requireNonNull(constructor, "constructor");
+        C collection = Objects.requireNonNull(constructor.get(), "constructor returned null");
+        visit(source, type, rules, (name, element) -> collection.add(element));
         return collection;
     }
     
-    public static <T> Set<T> set(Class<?> clazz, TypeCapture<? extends T> type, Supplier<Set<T>> constructor, MatchRules rules)
+    public static <T> Set<T> set(Class<?> source, TypeCompatible<T> type, MatchRules rules, Supplier<Set<T>> constructor)
     {
-        return Collections.unmodifiableSet(collect(clazz, type, constructor, rules));
+        return Collections.unmodifiableSet(collect(source, type, rules, constructor));
     }
     
-    public static <T> Set<T> set(Class<?> clazz, TypeCapture<? extends T> type, MatchRules rules)
+    public static <T> Set<T> set(Class<?> source, TypeCompatible<T> type, MatchRules rules)
     {
-        return set(clazz, type, HashSet::new, rules);
+        return set(source, type, rules, HashSet::new);
     }
     
-    public static <T> Set<T> set(Class<?> clazz, TypeCapture<? extends T> type)
+    public static <T> Set<T> set(Class<?> source, TypeCompatible<T> type)
     {
-        return set(clazz, type, ALL);
+        return set(source, type, ALL);
     }
     
-    public static <T> List<T> list(Class<?> clazz, TypeCapture<? extends T> type, Supplier<List<T>> constructor, MatchRules rules)
+    public static <T> List<T> list(Class<?> source, TypeCompatible<T> type, MatchRules rules, Supplier<List<T>> constructor)
     {
-        return Collections.unmodifiableList(collect(clazz, type, constructor, rules));
+        return Collections.unmodifiableList(collect(source, type, rules, constructor));
     }
     
-    public static <T> List<T> list(Class<?> clazz, TypeCapture<? extends T> type, MatchRules rules)
+    public static <T> List<T> list(Class<?> source, TypeCompatible<T> type, MatchRules rules)
     {
-        return list(clazz, type, ArrayList::new, rules);
+        return list(source, type, rules, ArrayList::new);
     }
     
-    public static <T> List<T> list(Class<?> clazz, TypeCapture<? extends T> type)
+    public static <T> List<T> list(Class<?> source, TypeCompatible<T> type)
     {
-        return list(clazz, type, ALL);
+        return list(source, type, ALL);
     }
-    
-    @Retention(RetentionPolicy.RUNTIME)
-    @Target(ElementType.FIELD)
-    public @interface Result {}
     
     public static class MatchRules
     {
         private final Set<String> all;
         private final Set<String> any;
         private final Set<String> not;
+        private final boolean collections;
     
-        private MatchRules(Set<String> all, Set<String> any, Set<String> not)
+        private MatchRules(Set<String> all, Set<String> any, Set<String> not, boolean collections)
         {
             this.all = Set.copyOf(all);
             this.any = Set.copyOf(any);
             this.not = Set.copyOf(not);
+            this.collections = collections;
         }
         
         private MatchRules()
         {
-            this(Collections.emptySet(), Collections.emptySet(), Collections.emptySet());
+            this(Set.of(), Set.of(), Set.of(), true);
         }
         
         public MatchRules all(String ... required)
         {
+            if (required.length <= 0) { return this; }
             Set<String> allModified = new HashSet<>(all);
             Collections.addAll(allModified, required);
-            return new MatchRules(allModified, any, not);
+            return new MatchRules(allModified, any, not, collections);
         }
         
         public MatchRules any(String ... optional)
         {
+            if (optional.length <= 0) { return this; }
             Set<String> anyModified = new HashSet<>(any);
             Collections.addAll(anyModified, optional);
-            return new MatchRules(all, anyModified, not);
+            return new MatchRules(all, anyModified, not, collections);
         }
         
         public MatchRules not(String ... excluded)
         {
+            if (excluded.length <= 0) { return this; }
             Set<String> notModified = new HashSet<>(not);
             Collections.addAll(notModified, excluded);
-            return new MatchRules(all, any, notModified);
+            return new MatchRules(all, any, notModified, collections);
+        }
+        
+        public MatchRules includeCollections()
+        {
+            return new MatchRules(all, any, not, true);
+        }
+        
+        public MatchRules skipCollections()
+        {
+            return new MatchRules(all, any, not, false);
         }
         
         public boolean matches(String name)
@@ -152,5 +167,7 @@ public class Aggregates
                 && (any.isEmpty() || any.stream().anyMatch(name::contains))
                 && (not.isEmpty() || not.stream().noneMatch(name::contains));
         }
+        
+        public boolean isVisitingCollectionsAllowed() { return collections; }
     }
 }

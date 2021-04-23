@@ -10,6 +10,12 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+/**
+ * A so-called "super" type token capable of capturing
+ * generic type information.
+ *
+ * @param <T>   the type
+ */
 public abstract class TypeCapture<T> implements TypeCompatible<T>
 {
     public static <T> TypeCapture<T> type(Class<T> type)
@@ -27,7 +33,7 @@ public abstract class TypeCapture<T> implements TypeCompatible<T>
     private final List<TypeCapture<?>> generics;
     private final int hashCode;
     
-    protected TypeCapture(Type type)
+    TypeCapture(Type type)
     {
         Objects.requireNonNull(type, "type");
         this.type = type;
