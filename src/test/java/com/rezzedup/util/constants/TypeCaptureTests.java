@@ -9,9 +9,9 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("TypeCapture")
-class TypeCaptureTests
+public class TypeCaptureTests
 {
-    static void distinctTypesThoroughlyEqual(TypeCapture<?> expected, TypeCapture<?> duplicate)
+    public static void distinctTypesThoroughlyEqual(TypeCapture<?> expected, TypeCapture<?> duplicate)
     {
         assertNotSame(expected, duplicate);
         assertEquals(expected.type(), duplicate.type());
@@ -26,13 +26,13 @@ class TypeCaptureTests
     
     @Nested
     @DisplayName("when capturing a direct type like String")
-    class DirectType
+    public class DirectType
     {
         final TypeCapture<String> stringType = TypeCapture.type(String.class);
         
         @Test
         @DisplayName("returns the same object instance for both 'type' and 'raw type'")
-        void typeAndRawAreTheSame()
+        public void typeAndRawAreTheSame()
         {
             assertEquals(String.class, stringType.type());
             assertEquals(String.class, stringType.raw());
@@ -41,7 +41,7 @@ class TypeCaptureTests
         
         @Test
         @DisplayName("is not generic")
-        void isNotGeneric()
+        public void isNotGeneric()
         {
             assertFalse(stringType.isGeneric());
             assertFalse(stringType.isWildcard());
@@ -49,14 +49,14 @@ class TypeCaptureTests
         
         @Test
         @DisplayName("has a standard fully qualified type name when calling toString()")
-        void checkToString()
+        public void checkToString()
         {
             assertEquals("java.lang.String", stringType.toString());
         }
         
         @Test
         @DisplayName("is equal to a distinct capture of the same class")
-        void equalsDuplicateCapture()
+        public void equalsDuplicateCapture()
         {
             distinctTypesThoroughlyEqual(stringType, TypeCapture.type("test".getClass()));
         }
@@ -64,13 +64,13 @@ class TypeCaptureTests
     
     @Nested
     @DisplayName("when capturing a simple generic type like List<String>")
-    class SimpleGenericType
+    public class SimpleGenericType
     {
         final TypeCapture<List<String>> listType = new TypeCapture<>() {};
         
         @Test
         @DisplayName("returns a different instance for 'type' and 'raw type'")
-        void typeAndRawAreDifferent()
+        public void typeAndRawAreDifferent()
         {
             assertEquals(List.class, listType.raw());
             assertNotEquals(listType.type(), listType.raw());
@@ -79,7 +79,7 @@ class TypeCaptureTests
         
         @Test
         @DisplayName("is generic")
-        void isGeneric()
+        public void isGeneric()
         {
             assertTrue(listType.isGeneric());
             assertFalse(listType.isWildcard());
@@ -93,14 +93,14 @@ class TypeCaptureTests
         
         @Test
         @DisplayName("has generic information when calling toString()")
-        void checkToString()
+        public void checkToString()
         {
             assertEquals("java.util.List<java.lang.String>", listType.toString());
         }
         
         @Test
         @DisplayName("is equal to a distinct capture of the same generic class")
-        void equalsDuplicateCapture()
+        public void equalsDuplicateCapture()
         {
             distinctTypesThoroughlyEqual(listType, new TypeCapture<List<String>>() {});
         }

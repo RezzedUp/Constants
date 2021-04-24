@@ -13,7 +13,7 @@ import java.util.function.BiConsumer;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("TypeCompatible")
-class TypeCompatibleTests
+public class TypeCompatibleTests
 {
     // Basic, barebones type token
     static abstract class SuperTypeToken<T>
@@ -31,33 +31,33 @@ class TypeCompatibleTests
     
     @Test
     @DisplayName("is compatible with direct types")
-    void isDirectTypeCompatible()
+    public void isDirectTypeCompatible()
     {
         SuperTypeToken<String> superString = new SuperTypeToken<>() {};
         TypeCompatible<String> compatibleString = superString::getType;
-        TypeCapture<String> capturedString = compatibleString.capture();
+        TypeCapture<String> capturedString = TypeCapture.type(compatibleString);
         
         assertEquals(superString.getType(), capturedString.type());
     }
     
     @Test
     @DisplayName("is compatible with simple generic types")
-    void isSimpleGenericTypeCompatible()
+    public void isSimpleGenericTypeCompatible()
     {
         SuperTypeToken<List<String>> superList = new SuperTypeToken<>() {};
         TypeCompatible<List<String>> compatibleList = superList::getType;
-        TypeCapture<List<String>> capturedList = compatibleList.capture();
+        TypeCapture<List<String>> capturedList = TypeCapture.type(compatibleList);
         
         assertEquals(superList.getType(), capturedList.type());
     }
     
     @Test
     @DisplayName("is compatible with complex generic types")
-    void isComplexGenericTypeCompatible()
+    public void isComplexGenericTypeCompatible()
     {
         SuperTypeToken<Map<Class<? extends Number>, BiConsumer<Collection<? super Number>, String>>> superMap = new SuperTypeToken<>() {};
         TypeCompatible<Map<Class<? extends Number>, BiConsumer<Collection<? super Number>, String>>> compatibleMap = superMap::getType;
-        TypeCapture<Map<Class<? extends Number>, BiConsumer<Collection<? super Number>, String>>> capturedMap = compatibleMap.capture();
+        TypeCapture<Map<Class<? extends Number>, BiConsumer<Collection<? super Number>, String>>> capturedMap = TypeCapture.type(compatibleMap);
         
         assertEquals(superMap.getType(), capturedMap.type());
     }

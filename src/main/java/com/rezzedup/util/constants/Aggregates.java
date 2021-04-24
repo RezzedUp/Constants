@@ -1,7 +1,7 @@
 package com.rezzedup.util.constants;
 
 import com.rezzedup.util.constants.annotations.Aggregated;
-import com.rezzedup.util.constants.except.AggregationException;
+import com.rezzedup.util.constants.exceptions.AggregationException;
 import pl.tlinkowski.annotation.basic.NullOr;
 
 import java.lang.reflect.Field;
@@ -79,7 +79,7 @@ public class Aggregates
     
     public static <T> Set<T> set(Class<?> source, TypeCompatible<T> type, MatchRules rules, Supplier<Set<T>> constructor)
     {
-        return Collections.unmodifiableSet(collect(source, type, rules, constructor));
+        return Set.copyOf(collect(source, type, rules, constructor));
     }
     
     public static <T> Set<T> set(Class<?> source, TypeCompatible<T> type, MatchRules rules)
@@ -94,7 +94,7 @@ public class Aggregates
     
     public static <T> List<T> list(Class<?> source, TypeCompatible<T> type, MatchRules rules, Supplier<List<T>> constructor)
     {
-        return Collections.unmodifiableList(collect(source, type, rules, constructor));
+        return List.copyOf(collect(source, type, rules, constructor));
     }
     
     public static <T> List<T> list(Class<?> source, TypeCompatible<T> type, MatchRules rules)
@@ -151,13 +151,15 @@ public class Aggregates
             return new MatchRules(all, any, notModified, collections);
         }
         
-        public MatchRules includeCollections()
+        public MatchRules includingCollections()
         {
+            if (collections) { return this; }
             return new MatchRules(all, any, not, true);
         }
         
-        public MatchRules skipCollections()
+        public MatchRules skippingCollections()
         {
+            if (!collections) { return this; }
             return new MatchRules(all, any, not, false);
         }
         

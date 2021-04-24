@@ -1,4 +1,4 @@
-package com.rezzedup.util.constants.except;
+package com.rezzedup.util.constants.exceptions;
 
 public class AggregationException extends RuntimeException
 {

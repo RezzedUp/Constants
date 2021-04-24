@@ -19,19 +19,36 @@ import java.util.stream.Collectors;
  */
 public abstract class TypeCapture<T> implements TypeCompatible<T>
 {
+    private static @NullOr TypeCapture<Object> ANY;
+    
+    public static TypeCapture<Object> any()
+    {
+        if (ANY == null) { ANY = new Captured<>(Object.class); }
+        return ANY;
+    }
+    
+    @SuppressWarnings("unchecked")
+    private static <T> TypeCapture<T> anything()
+    {
+        return (TypeCapture<T>) any();
+    }
+    
     public static <T> TypeCapture<T> type(Class<T> type)
     {
+        if (type == Object.class) { return anything(); }
         return new Captured<>(type);
     }
     
     public static TypeCapture<?> type(Type type)
     {
+        if (type == Object.class) { return anything(); }
         return new Captured<>(type);
     }
     
     public static <T> TypeCapture<T> type(TypeCompatible<T> type)
     {
         if (type instanceof TypeCapture) { return (TypeCapture<T>) type; }
+        if (type.type() == Object.class) { return anything(); }
         return new Captured<>(type.type());
     }
     
@@ -130,11 +147,13 @@ public abstract class TypeCapture<T> implements TypeCompatible<T>
         
         if (parameters.length <= 0) { return List.of(); }
         
-        List<TypeCapture<?>> resolved = Arrays.stream(parameters).map(Captured::new).collect(Collectors.toList());
+        List<TypeCapture<?>> resolved =
+            Arrays.stream(parameters).map(TypeCapture::type).collect(Collectors.toList());
+        
         return List.copyOf(resolved);
     }
     
-    static final class Captured<T> extends TypeCapture<T>
+    private static final class Captured<T> extends TypeCapture<T>
     {
         Captured(Type type) { super(type); }
     }
