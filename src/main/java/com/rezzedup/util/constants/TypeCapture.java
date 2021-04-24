@@ -8,6 +8,7 @@ import java.lang.reflect.WildcardType;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -26,6 +27,20 @@ public abstract class TypeCapture<T> implements TypeCompatible<T>
     public static TypeCapture<?> type(Type type)
     {
         return new Captured<>(type);
+    }
+    
+    public static <T> TypeCapture<T> type(TypeCompatible<T> type)
+    {
+        if (type instanceof TypeCapture) { return (TypeCapture<T>) type; }
+        return new Captured<>(type.type());
+    }
+    
+    @SuppressWarnings("unchecked")
+    public static <T> Optional<T> unsafeRawTypeCast(TypeCapture<T> type, Object object)
+    {
+        return (type.raw().isAssignableFrom(object.getClass()))
+            ? Optional.of((T) object)
+            : Optional.empty();
     }
     
     private final Type type;
@@ -53,10 +68,6 @@ public abstract class TypeCapture<T> implements TypeCompatible<T>
     
     @Override
     public final Type type() { return type; }
-    
-    @Deprecated
-    @Override
-    public final TypeCapture<T> capture() { return this; }
     
     public final Class<? super T> raw() { return raw; }
     

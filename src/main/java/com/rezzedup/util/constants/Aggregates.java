@@ -38,7 +38,7 @@ public class Aggregates
         Objects.requireNonNull(rules, "rules");
         Objects.requireNonNull(consumer, "consumer");
         
-        TypeCapture<T> capture = type.capture();
+        TypeCapture<T> capture = TypeCapture.type(type);
         
         for (Field field : source.getDeclaredFields())
         {
@@ -56,12 +56,12 @@ public class Aggregates
                 if (value instanceof Collection && rules.isVisitingCollectionsAllowed())
                 {
                     ((Collection<?>) value).stream()
-                        .flatMap(element -> TypeCompatible.unsafeRawTypeCast(capture, element).stream())
+                        .flatMap(element -> TypeCapture.unsafeRawTypeCast(capture, element).stream())
                         .forEach(element -> consumer.accept(field.getName(), element));
                 }
                 else
                 {
-                    TypeCompatible.unsafeRawTypeCast(capture, value)
+                    TypeCapture.unsafeRawTypeCast(capture, value)
                         .ifPresent(element -> consumer.accept(field.getName(), element));
                 }
             }
