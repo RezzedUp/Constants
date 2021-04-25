@@ -84,7 +84,7 @@ public class AggregatesTests
         @DisplayName("has 6 'WORD' elements, excluding 'CURSE'")
         public void hasWords()
         {
-            // All non-annotated names should be included, of which there are 3:
+            // All non-curse words should be included, of which there are 6:
             assertEquals(6, SimpleData.WORDS.size());
             
             // Assert that all 6 valid words are included
@@ -93,7 +93,7 @@ public class AggregatesTests
             assertTrue(SimpleData.WORDS.containsAll(SimpleData.GOODBYE_WORDS));
             
             // MatchRules disallow 'CURSE' words, so assert that WORDS doesn't contain any
-            assertTrue(SimpleData.WORDS.stream().noneMatch(SimpleData.CURSE_WORDS::contains));
+            assertFalse(SimpleData.WORDS.stream().anyMatch(SimpleData.CURSE_WORDS::contains));
         }
         
         @Test
@@ -112,7 +112,7 @@ public class AggregatesTests
             assertTrue(rude.containsAll(SimpleData.GOODBYE_WORDS));
             assertTrue(rude.containsAll(SimpleData.CURSE_WORDS));
             
-            assertTrue(rude.stream().noneMatch(SimpleData.GREETING_WORDS::contains));
+            assertFalse(rude.stream().anyMatch(SimpleData.GREETING_WORDS::contains));
             assertFalse(rude.contains(SimpleData.MAGIC_WORD));
         }
         

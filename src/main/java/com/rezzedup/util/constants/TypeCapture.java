@@ -133,7 +133,7 @@ public abstract class TypeCapture<T> implements TypeCompatible<T>
         }
         
         // All else fails.
-        throw new IllegalStateException(
+        throw new IllegalArgumentException(
             "Unsupported type: " + type + " (" + type.getClass().getName() + ")"
         );
     }
