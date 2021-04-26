@@ -8,6 +8,33 @@
     <artifactId>constants</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
+    <name>Constants</name>
+    <inceptionYear>2021</inceptionYear>
+    <description>Utilities for static final constants.</description>
+    <url>https://github.com/RezzedUp/Constants</url>
+
+    <licenses>
+        <license>
+            <name>Mozilla Public License Version 2.0</name>
+            <url>http://mozilla.org/MPL/2.0</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>RezzedUp</name>
+            <email>RezzedUp@users.noreply.github.com</email>
+            <organization>RezzedUp</organization>
+            <organizationUrl>https://github.com/RezzedUp</organizationUrl>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:git://github.com/RezzedUp/Constants.git</connection>
+        <developerConnection>scm:git:ssh://github.com:RezzedUp/Constants.git</developerConnection>
+        <url>http://github.com/RezzedUp/Constants/tree/master</url>
+    </scm>
+
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
@@ -59,23 +86,25 @@
                 <artifactId>license-maven-plugin</artifactId>
                 <version>4.1</version>
                 <configuration>
+                    <properties>
+                        <year>${project.inceptionYear}</year>
+                        <owner>RezzedUp</owner>
+                        <email>${project.url}</email>
+                    </properties>
                     <licenseSets>
                         <licenseSet>
                             <header>com/mycila/maven/plugin/license/templates/MPL-2.txt</header>
                             <excludes>
                                 <exclude>*.md</exclude>
+                                <exclude>*.txt</exclude>
                                 <exclude>*.xml</exclude>
-                                <exclude>**/LICENSE</exclude>
+                                <exclude>*.yml</exclude>
+                                <exclude>.run/**</exclude>
                                 <exclude>src/test/resources/**</exclude>
                                 <exclude>src/main/resources/**</exclude>
                             </excludes>
                         </licenseSet>
                     </licenseSets>
-                    <properties>
-                        <year>2021</year>
-                        <owner>RezzedUp</owner>
-                        <email>https://github.com/RezzedUp/Constants</email>
-                    </properties>
                 </configuration>
                 <executions>
                     <execution>
