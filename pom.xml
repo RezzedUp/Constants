@@ -23,17 +23,20 @@
     <developers>
         <developer>
             <name>RezzedUp</name>
-            <email>RezzedUp@users.noreply.github.com</email>
-            <organization>RezzedUp</organization>
-            <organizationUrl>https://github.com/RezzedUp</organizationUrl>
+            <url>https://github.com/RezzedUp</url>
         </developer>
     </developers>
 
     <scm>
         <connection>scm:git:git://github.com/RezzedUp/Constants.git</connection>
         <developerConnection>scm:git:ssh://github.com:RezzedUp/Constants.git</developerConnection>
-        <url>http://github.com/RezzedUp/Constants/tree/master</url>
+        <url>http://github.com/RezzedUp/Constants</url>
     </scm>
+
+    <issueManagement>
+        <system>GitHub Issues</system>
+        <url>https://github.com/RezzedUp/Constants/issues</url>
+    </issueManagement>
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
