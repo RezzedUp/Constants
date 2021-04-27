@@ -12,4 +12,5 @@ module com.rezzedup.util.constants
     exports com.rezzedup.util.constants;
     exports com.rezzedup.util.constants.annotations;
     exports com.rezzedup.util.constants.exceptions;
+    exports com.rezzedup.util.constants.types;
 }

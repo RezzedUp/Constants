@@ -8,6 +8,7 @@
 package com.rezzedup.util.constants;
 
 import com.rezzedup.util.constants.annotations.Aggregated;
+import com.rezzedup.util.constants.types.TypeCapture;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;

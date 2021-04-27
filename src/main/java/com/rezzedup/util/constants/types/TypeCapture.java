@@ -5,7 +5,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-package com.rezzedup.util.constants;
+package com.rezzedup.util.constants.types;
 
 import pl.tlinkowski.annotation.basic.NullOr;
 
@@ -15,7 +15,6 @@ import java.lang.reflect.WildcardType;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -150,14 +149,6 @@ public abstract class TypeCapture<T> implements TypeCompatible<T>
             Arrays.stream(parameters).map(TypeCapture::type).collect(Collectors.toList());
         
         return List.copyOf(resolved);
-    }
-    
-    @SuppressWarnings("unchecked")
-    static <T> Optional<T> unsafeRawTypeCast(TypeCapture<T> type, Object object)
-    {
-        return (type.raw().isAssignableFrom(object.getClass()))
-            ? Optional.of((T) object)
-            : Optional.empty();
     }
     
     private static final class Captured<T> extends TypeCapture<T>
