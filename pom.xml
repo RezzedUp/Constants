@@ -120,4 +120,56 @@
         </plugins>
     </build>
 
+    <profiles>
+        <!-- Production (activated by: -Pproduction OR -Ddeploy) -->
+        <profile>
+            <id>production</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+                <property>
+                    <name>deploy</name>
+                </property>
+            </activation>
+            <build>
+                <defaultGoal>clean install</defaultGoal>
+                <plugins>
+                    <!-- Generate javadocs -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>3.2.0</version>
+                        <configuration>
+                            <doclint>none</doclint> <!-- Calm warnings due to not having *everything* documented -->
+                            <links>
+                                <link>https://javadoc.io/doc/pl.tlinkowski.annotation/pl.tlinkowski.annotation.basic/0.2.0/</link>
+                            </links>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <!-- Attach sources -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <version>3.2.0</version>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <goals>
+                                    <goal>jar-no-fork</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
 </project>
