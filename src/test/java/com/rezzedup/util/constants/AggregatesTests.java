@@ -53,7 +53,7 @@ public class AggregatesTests
                 SimpleData.class,
                 TypeCapture.type(String.class),
                 Aggregates.matching()
-                    .all("WORD").not("CURSE").includingCollections()
+                    .all("WORD").not("CURSE").collections(true)
             );
     }
     
@@ -107,12 +107,12 @@ public class AggregatesTests
         @DisplayName("has 5 rude 'WORD' elements")
         public void rudeWords()
         {
-            Set<String> rude =
-                Aggregates.set(
-                    SimpleData.class,
-                    TypeCapture.type(String.class),
-                    Aggregates.matching().any("WORD").not("GREETING", "MAGIC")
-                );
+            Set<String> rude = Aggregates.set(
+                SimpleData.class,
+                TypeCapture.type(String.class),
+                Aggregates.matching()
+                    .any("WORD").not("GREETING", "MAGIC").collections(true)
+            );
             
             assertEquals(5, rude.size());
             
@@ -132,7 +132,10 @@ public class AggregatesTests
             assertEquals(2, numbers.size());
             
             // CURSED_NUMBER + all 3 CURSE_WORDS
-            List<?> curses = Aggregates.list(SimpleData.class, TypeCapture.any(), Aggregates.matching().all("CURSE"));
+            List<?> curses = Aggregates.list(
+                SimpleData.class, TypeCapture.any(), Aggregates.matching().all("CURSE").collections(true)
+            );
+            
             assertEquals(4, curses.size());
         }
     }

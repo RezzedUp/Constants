@@ -59,14 +59,6 @@ public abstract class TypeCapture<T> implements TypeCompatible<T>
         return new Captured<>(type.type());
     }
     
-    @SuppressWarnings("unchecked")
-    public static <T> Optional<T> unsafeRawTypeCast(TypeCapture<T> type, Object object)
-    {
-        return (type.raw().isAssignableFrom(object.getClass()))
-            ? Optional.of((T) object)
-            : Optional.empty();
-    }
-    
     private final Type type;
     private final Class<? super T> raw;
     private final List<TypeCapture<?>> generics;
@@ -158,6 +150,14 @@ public abstract class TypeCapture<T> implements TypeCompatible<T>
             Arrays.stream(parameters).map(TypeCapture::type).collect(Collectors.toList());
         
         return List.copyOf(resolved);
+    }
+    
+    @SuppressWarnings("unchecked")
+    static <T> Optional<T> unsafeRawTypeCast(TypeCapture<T> type, Object object)
+    {
+        return (type.raw().isAssignableFrom(object.getClass()))
+            ? Optional.of((T) object)
+            : Optional.empty();
     }
     
     private static final class Captured<T> extends TypeCapture<T>

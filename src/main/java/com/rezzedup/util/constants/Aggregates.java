@@ -131,7 +131,7 @@ public class Aggregates
         
         private MatchRules()
         {
-            this(Set.of(), Set.of(), Set.of(), true);
+            this(Set.of(), Set.of(), Set.of(), false);
         }
         
         public MatchRules all(String ... required)
@@ -158,16 +158,10 @@ public class Aggregates
             return new MatchRules(all, any, notModified, collections);
         }
         
-        public MatchRules includingCollections()
+        public MatchRules collections(boolean visit)
         {
-            if (collections) { return this; }
-            return new MatchRules(all, any, not, true);
-        }
-        
-        public MatchRules skippingCollections()
-        {
-            if (!collections) { return this; }
-            return new MatchRules(all, any, not, false);
+            if (collections == visit) { return this; }
+            return new MatchRules(all, any, not, visit);
         }
         
         public boolean matches(String name)
