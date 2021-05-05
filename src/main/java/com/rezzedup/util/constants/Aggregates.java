@@ -66,12 +66,13 @@ public class Aggregates
                 if (value instanceof Collection && rules.isVisitingCollectionsAllowed())
                 {
                     ((Collection<?>) value).stream()
-                        .flatMap(element -> Cast.unsafe(capture, element).stream())
+                        .flatMap(element -> Cast.unsafe().generic(capture, element).stream())
                         .forEach(element -> consumer.accept(field.getName(), element));
                 }
                 else
                 {
-                    Cast.unsafe(capture, value).ifPresent(element -> consumer.accept(field.getName(), element));
+                    Cast.unsafe().generic(capture, value)
+                        .ifPresent(element -> consumer.accept(field.getName(), element));
                 }
             }
             catch (IllegalAccessException e) { throw new AggregationException(e); }

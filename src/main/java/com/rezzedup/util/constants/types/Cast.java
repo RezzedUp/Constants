@@ -17,6 +17,8 @@ public class Cast
 {
     private Cast() { throw new UnsupportedOperationException(); }
     
+    private static final Unsafe UNSAFE = new Unsafe();
+    
     @SuppressWarnings("unchecked")
     public static <T> Optional<T> as(Class<T> type, @NullOr Object object)
     {
@@ -32,16 +34,26 @@ public class Cast
         return object -> as(type, object);
     }
     
-    @SuppressWarnings("unchecked")
-    public static <T> Optional<T> unsafe(TypeCompatible<T> type, @NullOr Object object)
+    public static Unsafe unsafe()
     {
-        Class<?> raw = TypeCapture.type(type).raw();
-        return (Optional<T>) as(raw, object);
+        return UNSAFE;
     }
     
-    public static <T> Function<@NullOr Object, Optional<T>> unsafe(TypeCompatible<T> type)
+    public static final class Unsafe
     {
-        Objects.requireNonNull(type, "type");
-        return object -> unsafe(type, object);
+        private Unsafe() {}
+        
+        @SuppressWarnings("unchecked")
+        public <T> Optional<T> generic(TypeCompatible<T> type, @NullOr Object object)
+        {
+            Class<?> raw = TypeCapture.type(type).raw();
+            return (Optional<T>) as(raw, object);
+        }
+        
+        public <T> Function<@NullOr Object, Optional<T>> generic(TypeCompatible<T> type)
+        {
+            Objects.requireNonNull(type, "type");
+            return object -> generic(type, object);
+        }
     }
 }
