@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("TypeCompatible")
 public class TypeCompatibleTests
