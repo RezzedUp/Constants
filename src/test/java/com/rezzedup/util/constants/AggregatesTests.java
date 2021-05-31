@@ -7,7 +7,8 @@
  */
 package com.rezzedup.util.constants;
 
-import com.rezzedup.util.constants.annotations.Aggregated;
+import com.rezzedup.util.constants.annotations.AggregatedResult;
+import com.rezzedup.util.constants.annotations.NotAggregated;
 import com.rezzedup.util.constants.types.TypeCapture;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -25,7 +26,7 @@ public class AggregatesTests
     {
         static final String FIRST_NAME = "John";
         
-        @Aggregated.Skip
+        @NotAggregated
         static final String FAKE_NAME = "Dummy";
         
         static final String LAST_NAME = "Doe";
@@ -44,11 +45,11 @@ public class AggregatesTests
         
         static final Set<String> CURSE_WORDS = Set.of("***", "****", "*****");
         
-        @Aggregated.Result
+        @AggregatedResult
         static final List<String> NAMES =
             Aggregates.list(SimpleData.class, TypeCapture.type(String.class), Aggregates.matching().all("NAME"));
         
-        @Aggregated.Result
+        @AggregatedResult
         static final Set<String> WORDS =
             Aggregates.set(
                 SimpleData.class,

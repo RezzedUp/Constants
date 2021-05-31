@@ -7,7 +7,8 @@
  */
 package com.rezzedup.util.constants;
 
-import com.rezzedup.util.constants.annotations.Aggregated;
+import com.rezzedup.util.constants.annotations.AggregatedResult;
+import com.rezzedup.util.constants.annotations.NotAggregated;
 import com.rezzedup.util.constants.exceptions.AggregationException;
 import com.rezzedup.util.constants.types.Cast;
 import com.rezzedup.util.constants.types.TypeCapture;
@@ -36,9 +37,8 @@ public class Aggregates
     
     private static boolean fieldHasSkipAnnotation(Field field)
     {
-        return field.isAnnotationPresent(Aggregated.class)
-            || field.isAnnotationPresent(Aggregated.Result.class)
-            || field.isAnnotationPresent(Aggregated.Skip.class);
+        return field.isAnnotationPresent(AggregatedResult.class)
+            || field.isAnnotationPresent(NotAggregated.class);
     }
     
     public static <T> void visit(Class<?> source, TypeCompatible<T> type, MatchRules rules, BiConsumer<String, T> consumer)
@@ -63,7 +63,7 @@ public class Aggregates
                 @NullOr Object value = field.get(null);
                 if (value == null) { continue; }
                 
-                if (value instanceof Collection && rules.isVisitingCollectionsAllowed())
+                if (value instanceof Collection && rules.isAggregatingFromCollections())
                 {
                     ((Collection<?>) value).stream()
                         .flatMap(element -> Cast.unsafe().generic(capture, element).stream())
@@ -75,7 +75,7 @@ public class Aggregates
                         .ifPresent(element -> consumer.accept(field.getName(), element));
                 }
             }
-            catch (IllegalAccessException e) { throw new AggregationException(e); }
+            catch (Exception e) { throw new AggregationException(e); }
         }
     }
     
@@ -174,6 +174,6 @@ public class Aggregates
                 && (not.isEmpty() || not.stream().noneMatch(name::contains));
         }
         
-        public boolean isVisitingCollectionsAllowed() { return collections; }
+        public boolean isAggregatingFromCollections() { return collections; }
     }
 }
