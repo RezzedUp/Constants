@@ -15,6 +15,7 @@ import com.rezzedup.util.constants.types.TypeCapture;
 import com.rezzedup.util.constants.types.TypeCompatible;
 import pl.tlinkowski.annotation.basic.NullOr;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -36,6 +37,9 @@ public class Aggregates
     
     private static final MatchRules ALL = new MatchRules();
     
+    private static final Set<Class<? extends Annotation>> SKIP_ANNOTATIONS =
+        Set.of(AggregatedResult.class, NotAggregated.class);
+    
     /**
      * Lets you specify criteria for filtering constants
      * based on their name and other settings. By default,
@@ -50,12 +54,6 @@ public class Aggregates
      * @return  the default immutable rules instance
      */
     public static MatchRules matching() { return ALL; }
-    
-    private static boolean fieldHasSkipAnnotation(Field field)
-    {
-        return field.isAnnotationPresent(AggregatedResult.class)
-            || field.isAnnotationPresent(NotAggregated.class);
-    }
     
     /**
      * Visits all constants of a specific type matching the
@@ -80,7 +78,7 @@ public class Aggregates
         {
             if (!Modifier.isStatic(field.getModifiers())) { continue; }
             if (!rules.matches(field.getName())) { continue; }
-            if (fieldHasSkipAnnotation(field)) { continue; }
+            if (SKIP_ANNOTATIONS.stream().anyMatch(field::isAnnotationPresent)) { continue; }
             
             field.setAccessible(true);
             
@@ -340,5 +338,31 @@ public class Aggregates
          * @return  {@code true} if allowed, otherwise {@code false}
          */
         public boolean isAggregatingFromCollections() { return collections; }
+    
+        @Override
+        public String toString()
+        {
+            return "MatchRules{" +
+                "all=" + all +
+                ", any=" + any +
+                ", not=" + not +
+                ", collections=" + collections +
+                '}';
+        }
+        
+        @Override
+        public boolean equals(@NullOr Object o)
+        {
+            if (this == o) { return true; }
+            if (o == null || getClass() != o.getClass()) { return false; }
+            MatchRules that = (MatchRules) o;
+            return collections == that.collections && all.equals(that.all) && any.equals(that.any) && not.equals(that.not);
+        }
+    
+        @Override
+        public int hashCode()
+        {
+            return Objects.hash(all, any, not, collections);
+        }
     }
 }

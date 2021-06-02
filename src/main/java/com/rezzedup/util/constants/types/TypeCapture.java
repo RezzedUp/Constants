@@ -21,12 +21,28 @@ import java.util.stream.Collectors;
  * A so-called "super" type token capable of capturing
  * generic type information.
  *
+ * <p>In order to capture generic types, this class
+ * <b>must</b> be extended with explicit type parameters.
+ * This should typically be done by instantiating an
+ * anonymous subclass and assigning it to a constant.</p>
+ *
+ * <p>For example:</p>
+ *
+ * <pre>
+ * public static final TypeCapture&lt;List&lt;String&gt;&gt; STRING_LIST_TYPE = new TypeCaptur&lt;&gt;() {};
+ * </pre>
+ *
  * @param <T>   the type
  */
 public abstract class TypeCapture<T> implements TypeCompatible<T>
 {
     private static @NullOr TypeCapture<Object> ANY;
     
+    /**
+     * Gets the constant {@code Object} type capture.
+     *
+     * @return  object class type capture
+     */
     public static TypeCapture<Object> any()
     {
         if (ANY == null) { ANY = new Captured<>(Object.class); }
@@ -39,18 +55,42 @@ public abstract class TypeCapture<T> implements TypeCompatible<T>
         return (TypeCapture<T>) any();
     }
     
+    /**
+     * Captures the type directly from a non-generic class.
+     *
+     * @param type  the class
+     * @param <T>   non-generic type
+     *
+     * @return  the captured type
+     */
     public static <T> TypeCapture<T> type(Class<T> type)
     {
         if (type == Object.class) { return anything(); }
         return new Captured<>(type);
     }
     
+    /**
+     * Captures an unknown type.
+     *
+     * @param type  the unknown type
+     *
+     * @return  the captured type
+     */
     public static TypeCapture<?> type(Type type)
     {
         if (type == Object.class) { return anything(); }
         return new Captured<>(type);
     }
     
+    /**
+     * Converts an alternative compatible type token
+     * into a type captures.
+     *
+     * @param type  the compatible type token
+     * @param <T>   generic type
+     *
+     * @return  the captured type
+     */
     public static <T> TypeCapture<T> type(TypeCompatible<T> type)
     {
         if (type instanceof TypeCapture) { return (TypeCapture<T>) type; }
@@ -72,6 +112,11 @@ public abstract class TypeCapture<T> implements TypeCompatible<T>
         this.hashCode = type.hashCode();
     }
     
+    /**
+     * Automatically retrieves type information based on
+     * reified generic types (only applicable for subclasses
+     * with <b>explicitly declared</b> type parameters).
+     */
     public TypeCapture()
     {
         Type superclass = getClass().getGenericSuperclass();
@@ -84,12 +129,39 @@ public abstract class TypeCapture<T> implements TypeCompatible<T>
     @Override
     public final Type type() { return type; }
     
+    /**
+     * Gets the "raw" type, or, in other words:
+     * its direct, non-generic class.
+     *
+     * @return  the class representing this type
+     */
     public final Class<? super T> raw() { return raw; }
     
+    /**
+     * Gets the captured generic type parameters.
+     *
+     * @return  an immutable list of captured generic type
+     *          parameters, otherwise empty
+     */
     public final List<TypeCapture<?>> generics() { return generics; }
     
+    /**
+     * Checks if generic type parameters are captured
+     * or not.
+     *
+     * @return  {@code true} if generic type parameters are
+     *          captured, otherwise {@code false}
+     */
     public final boolean isGeneric() { return !generics.isEmpty(); }
     
+    /**
+     * Checks if the captured type is a wildcard
+     * ({@code ?}) or not.
+     *
+     * @return  {@code true} if the captured type is an
+     *          instance of {@link WildcardType},
+     *          otherwise {@code false}
+     */
     public final boolean isWildcard() { return type instanceof WildcardType; }
     
     @Override

@@ -13,6 +13,9 @@ import pl.tlinkowski.annotation.basic.NullOr;
 
 import java.util.Set;
 
+/**
+ * Constants and utilities for boxed primitives.
+ */
 public class Primitives
 {
     private Primitives() { throw new UnsupportedOperationException(); }
@@ -31,11 +34,27 @@ public class Primitives
     private static final Set<Class<?>> BOXES =
         Aggregates.set(Primitives.class, Wildcards.classType(), Aggregates.matching().collections(true));
     
+    /**
+     * Gets all boxed primitive types.
+     *
+     * @return  an immutable {@code Set} containing all
+     *          boxed primitive types
+     */
     public static Set<Class<?>> boxedTypes()
     {
         return BOXES;
     }
     
+    /**
+     * Checks if an object is an instance of a
+     * boxed primitive.
+     *
+     * @param object    the object
+     *
+     * @return  {@code true} if the object isn't null and
+     *          its class is a boxed primitive type,
+     *          otherwise {@code false}
+     */
     public static boolean isBoxed(@NullOr Object object)
     {
         return object != null && boxedTypes().contains(object.getClass());

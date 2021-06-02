@@ -13,12 +13,24 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 
+/**
+ * Utilities for casting objects.
+ */
 public class Cast
 {
     private Cast() { throw new UnsupportedOperationException(); }
     
     private static final Unsafe UNSAFE = new Unsafe();
     
+    /**
+     * Attempts to cast an object into the specified type.
+     *
+     * @param type      type to cast into
+     * @param object    object to cast
+     * @param <T>       the type
+     *
+     * @return  the successfully cast object, otherwise empty
+     */
     @SuppressWarnings("unchecked")
     public static <T> Optional<T> as(Class<T> type, @NullOr Object object)
     {
@@ -28,21 +40,59 @@ public class Cast
             .map(o -> (T) o);
     }
     
+    /**
+     * Creates a function that attempts to cast objects
+     * into the specified type.
+     *
+     * @param type  type to cast into
+     * @param <T>   the type
+     *
+     * @return  a function that casts objects into
+     *          the specified type
+     *
+     * @see #as(Class, Object)
+     */
     public static <T> Function<@NullOr Object, Optional<T>> as(Class<T> type)
     {
         Objects.requireNonNull(type, "type");
         return object -> as(type, object);
     }
     
+    /**
+     * Gets the unsafe casting utilities instance.
+     *
+     * <p><b>Warning!</b> The unsafe instance cannot
+     * guarantee accurate casts.</p>
+     *
+     * @return  the unsafe casting utilities instance
+     */
     public static Unsafe unsafe()
     {
         return UNSAFE;
     }
     
+    /**
+     * Unsafe utilities for casting objects.
+     * This class <b>cannot</b> guarantee accurate casts.
+     */
     public static final class Unsafe
     {
         private Unsafe() {}
-        
+    
+        /**
+         * Attempts to cast an object into the specified
+         * generic type.
+         *
+         * <p><b>Warning:</b> since generic type
+         * information is erased, casting will "succeed"
+         * for <b>any</b> instance of a generic class.</p>
+         *
+         * @param type      generic type to cast into
+         * @param object    object to cast
+         * @param <T>       the generic type
+         *
+         * @return  the potentially cast object, otherwise empty
+         */
         @SuppressWarnings("unchecked")
         public <T> Optional<T> generic(TypeCompatible<T> type, @NullOr Object object)
         {
@@ -50,6 +100,22 @@ public class Cast
             return (Optional<T>) as(raw, object);
         }
         
+        /**
+         * Creates a function that attempts to cast objects
+         * into the specified generic type.
+         *
+         * <p><b>Warning:</b> since generic type
+         * information is erased, casting will "succeed"
+         * for <b>any</b> instance of a generic class.</p>
+         *
+         * @param type      generic type to cast into
+         * @param <T>       the generic type
+         *
+         * @return  a function that casts objects into
+         *          the specified generic type
+         *
+         * @see #generic(TypeCompatible, Object)
+         */
         public <T> Function<@NullOr Object, Optional<T>> generic(TypeCompatible<T> type)
         {
             Objects.requireNonNull(type, "type");

@@ -12,25 +12,55 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Constant type captures for common generic wildcard types.
+ */
 public class Wildcards
 {
     private Wildcards() { throw new UnsupportedOperationException(); }
     
     private static final TypeCapture<Class<?>> CLASS = new TypeCapture<>() {};
     
+    /**
+     * Wildcard {@code Class} type capture.
+     *
+     * @return  wildcard type capture
+     */
     public static TypeCapture<Class<?>> classType() { return CLASS; }
     
     private static final TypeCapture<List<?>> LIST = new TypeCapture<>() {};
     
+    /**
+     * Wildcard {@code List} type capture.
+     *
+     * @return  wildcard type capture
+     */
     public static TypeCapture<List<?>> listType() { return LIST; }
     
     private static final TypeCapture<Set<?>> SET = new TypeCapture<>() {};
     
+    /**
+     * Wildcard {@code Set} type capture.
+     *
+     * @return  wildcard type capture
+     */
+    public static TypeCapture<Set<?>> setType() { return SET; }
+    
     private static final TypeCapture<Collection<?>> COLLECTION = new TypeCapture<>() {};
     
+    /**
+     * Wildcard {@code Collection} type capture.
+     *
+     * @return  wildcard type capture
+     */
     public static TypeCapture<Collection<?>> collectionType() { return COLLECTION; }
     
     private static final TypeCapture<Map<?, ?>> MAP = new TypeCapture<>() {};
     
+    /**
+     * Wildcard {@code Map} type capture.
+     *
+     * @return  wildcard type capture
+     */
     public static TypeCapture<Map<?, ?>> mapType() { return MAP; }
 }

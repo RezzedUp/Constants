@@ -7,7 +7,15 @@
  */
 package com.rezzedup.util.constants.exceptions;
 
+/**
+ * Represents an exception that occurred during aggregation.
+ */
 public class AggregationException extends RuntimeException
 {
+    /**
+     * Wraps an exception that occurred during aggregation.
+     *
+     * @param caught    the exception
+     */
     public AggregationException(Throwable caught) { super(caught); }
 }
