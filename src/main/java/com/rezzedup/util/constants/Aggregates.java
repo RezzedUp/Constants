@@ -41,7 +41,7 @@ public class Aggregates
         Set.of(AggregatedResult.class, NotAggregated.class);
     
     /**
-     * Lets you specify criteria for filtering constants
+     * Specifies criteria for filtering constants
      * based on their name and other settings. By default,
      * the rules will match all names but won't visit
      * the contents of constant collections.
