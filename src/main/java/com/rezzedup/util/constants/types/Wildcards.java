@@ -19,48 +19,28 @@ public class Wildcards
 {
     private Wildcards() { throw new UnsupportedOperationException(); }
     
-    private static final TypeCapture<Class<?>> CLASS = new TypeCapture<>() {};
-    
     /**
      * Wildcard {@code Class} type capture.
-     *
-     * @return  wildcard type capture
      */
-    public static TypeCapture<Class<?>> classType() { return CLASS; }
-    
-    private static final TypeCapture<List<?>> LIST = new TypeCapture<>() {};
+    public static final TypeCapture<Class<?>> CLASS = new TypeCapture<>() {};
     
     /**
      * Wildcard {@code List} type capture.
-     *
-     * @return  wildcard type capture
      */
-    public static TypeCapture<List<?>> listType() { return LIST; }
-    
-    private static final TypeCapture<Set<?>> SET = new TypeCapture<>() {};
+    public static final TypeCapture<List<?>> LIST = new TypeCapture<>() {};
     
     /**
      * Wildcard {@code Set} type capture.
-     *
-     * @return  wildcard type capture
      */
-    public static TypeCapture<Set<?>> setType() { return SET; }
-    
-    private static final TypeCapture<Collection<?>> COLLECTION = new TypeCapture<>() {};
+    public static final TypeCapture<Set<?>> SET = new TypeCapture<>() {};
     
     /**
      * Wildcard {@code Collection} type capture.
-     *
-     * @return  wildcard type capture
      */
-    public static TypeCapture<Collection<?>> collectionType() { return COLLECTION; }
-    
-    private static final TypeCapture<Map<?, ?>> MAP = new TypeCapture<>() {};
+    public static final TypeCapture<Collection<?>> COLLECTION = new TypeCapture<>() {};
     
     /**
      * Wildcard {@code Map} type capture.
-     *
-     * @return  wildcard type capture
      */
-    public static TypeCapture<Map<?, ?>> mapType() { return MAP; }
+    public static final TypeCapture<Map<?, ?>> MAP = new TypeCapture<>() {};
 }

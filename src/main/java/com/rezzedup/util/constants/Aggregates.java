@@ -56,8 +56,8 @@ public class Aggregates
     public static MatchRules matching() { return ALL; }
     
     /**
-     * Visits all constants of a specific type matching the
-     * provided rules.
+     * Visits all {@code static final} constants of a specific
+     * type matching the provided rules.
      *
      * @param source    the class containing constants
      * @param type      type token of the type
@@ -76,7 +76,7 @@ public class Aggregates
         
         for (Field field : source.getDeclaredFields())
         {
-            if (!Modifier.isStatic(field.getModifiers())) { continue; }
+            if (!Constants.isConstant(field)) { continue; }
             if (!rules.matches(field.getName())) { continue; }
             if (SKIP_ANNOTATIONS.stream().anyMatch(field::isAnnotationPresent)) { continue; }
             

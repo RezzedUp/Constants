@@ -32,7 +32,7 @@ public class Primitives
     
     @AggregatedResult
     private static final Set<Class<?>> BOXES =
-        Aggregates.set(Primitives.class, Wildcards.classType(), Aggregates.matching().collections(true));
+        Aggregates.set(Primitives.class, Wildcards.CLASS, Aggregates.matching().collections(true));
     
     /**
      * Gets all boxed primitive types.
