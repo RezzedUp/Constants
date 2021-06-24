@@ -11,6 +11,8 @@
           <option name="goals">
             <list>
               <option value="-Ddeploy" />
+              <option value="clean" />
+              <option value="deploy" />
             </list>
           </option>
           <option name="pomFileName" />

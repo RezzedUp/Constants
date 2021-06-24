@@ -42,6 +42,11 @@
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <!-- License headers -->
+        <license.header.year>${project.inceptionYear}</license.header.year>
+        <license.header.owner>RezzedUp</license.header.owner>
+        <license.header.url>https://github.com/RezzedUp/Constants</license.header.url>
     </properties>
 
     <dependencies>
@@ -60,6 +65,17 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
 
     <build>
         <defaultGoal>package</defaultGoal>
@@ -90,9 +106,9 @@
                 <version>4.1</version>
                 <configuration>
                     <properties>
-                        <year>${project.inceptionYear}</year>
-                        <owner>RezzedUp</owner>
-                        <email>${project.url}</email>
+                        <year>${license.header.year}</year>
+                        <owner>${license.header.owner}</owner>
+                        <email>${license.header.url}</email>
                     </properties>
                     <licenseSets>
                         <licenseSet>
@@ -173,6 +189,34 @@
                         </executions>
                     </plugin>
                 </plugins>
+            </build>
+        </profile>
+        <!-- Production (activated by: -Ddeploy) -->
+        <profile>
+            <id>deploy</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+                <property>
+                    <name>deploy</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.6</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+              </plugins>
             </build>
         </profile>
     </profiles>
