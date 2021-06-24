@@ -11,8 +11,11 @@ import pl.tlinkowski.annotation.basic.NullOr;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Constants
 {
@@ -25,30 +28,29 @@ public class Constants
             && Modifier.isFinal(field.getModifiers());
     }
     
-    private static List<Field> constantsOf(Class<?> clazz, boolean accessibleOnly)
+    public static Stream<Field> streamAll(Class<?> clazz)
     {
-        @NullOr List<Field> all = null;
-        
-        for (Field field : clazz.getDeclaredFields())
-        {
-            if (isConstant(field))
-            {
-                if (accessibleOnly && !field.canAccess(null)) { continue; }
-                if (all == null) { all = new ArrayList<>(); }
-                all.add(field);
-            }
-        }
-        
-        return (all == null) ? List.of() : List.copyOf(all);
+        Objects.requireNonNull(clazz, "clazz");
+        return Arrays.stream(clazz.getDeclaredFields()).filter(Constants::isConstant);
     }
     
-    public static List<Field> all(Class<?> clazz)
+    public static Stream<Field> streamAccessible(Class<?> clazz)
     {
-        return constantsOf(clazz, false);
+        return streamAll(clazz).filter(field -> field.canAccess(null));
     }
     
-    public static List<Field> accessible(Class<?> clazz)
+    private static List<Field> list(Stream<Field> stream)
     {
-        return constantsOf(clazz, true);
+        return List.copyOf(stream.collect(Collectors.toList()));
+    }
+    
+    public static List<Field> listAll(Class<?> clazz)
+    {
+        return list(streamAll(clazz));
+    }
+    
+    public static List<Field> listAccessible(Class<?> clazz)
+    {
+        return list(streamAccessible(clazz));
     }
 }

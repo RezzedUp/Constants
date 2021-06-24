@@ -16,8 +16,6 @@ import com.rezzedup.util.constants.types.TypeCompatible;
 import pl.tlinkowski.annotation.basic.NullOr;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -74,33 +72,32 @@ public class Aggregates
         
         TypeCapture<T> capture = TypeCapture.type(type);
         
-        for (Field field : source.getDeclaredFields())
-        {
-            if (!Constants.isConstant(field)) { continue; }
-            if (!rules.matches(field.getName())) { continue; }
-            if (SKIP_ANNOTATIONS.stream().anyMatch(field::isAnnotationPresent)) { continue; }
-            
-            field.setAccessible(true);
-            
-            try
+        Constants.streamAll(source)
+            .filter(field -> rules.matches(field.getName()))
+            .filter(field -> SKIP_ANNOTATIONS.stream().noneMatch(field::isAnnotationPresent))
+            .forEach(field ->
             {
-                @NullOr Object value = field.get(null);
-                if (value == null) { continue; }
+                field.setAccessible(true);
                 
-                if (value instanceof Collection && rules.isAggregatingFromCollections())
+                try
                 {
-                    ((Collection<?>) value).stream()
-                        .flatMap(element -> Cast.unsafe().generic(capture, element).stream())
-                        .forEach(element -> consumer.accept(field.getName(), element));
+                    @NullOr Object value = field.get(null);
+                    if (value == null) { return; }
+                    
+                    if (value instanceof Collection && rules.isAggregatingFromCollections())
+                    {
+                        ((Collection<?>) value).stream()
+                            .flatMap(element -> Cast.unsafe().generic(capture, element).stream())
+                            .forEach(element -> consumer.accept(field.getName(), element));
+                    }
+                    else
+                    {
+                        Cast.unsafe().generic(capture, value)
+                            .ifPresent(element -> consumer.accept(field.getName(), element));
+                    }
                 }
-                else
-                {
-                    Cast.unsafe().generic(capture, value)
-                        .ifPresent(element -> consumer.accept(field.getName(), element));
-                }
-            }
-            catch (Exception e) { throw new AggregationException(e); }
-        }
+                catch (Exception e) { throw new AggregationException(e); }
+            });
     }
     
     private static <T, C extends Collection<T>> C collect(Class<?> source, TypeCompatible<T> type, MatchRules rules, Supplier<C> constructor)
@@ -330,7 +327,7 @@ public class Aggregates
                 && (any.isEmpty() || any.stream().anyMatch(name::contains))
                 && (not.isEmpty() || not.stream().noneMatch(name::contains));
         }
-    
+        
         /**
          * Gets whether aggregating from the contents of constant
          * collections is allowed by these rules or not.
