@@ -72,7 +72,7 @@ public class Aggregates
         
         TypeCapture<T> capture = TypeCapture.type(type);
         
-        Constants.streamAll(source)
+        Constants.all(source)
             .filter(field -> rules.matches(field.getName()))
             .filter(field -> SKIP_ANNOTATIONS.stream().noneMatch(field::isAnnotationPresent))
             .forEach(field ->
