@@ -54,7 +54,7 @@ public class Aggregates
     public static MatchRules matching() { return ALL; }
     
     /**
-     * Visits all {@code static final} constants of a specific
+     * Visits all constants of a specific
      * type matching the provided rules.
      *
      * @param source    the class containing constants
