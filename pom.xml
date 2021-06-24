@@ -6,7 +6,7 @@
 
     <groupId>com.rezzedup.util</groupId>
     <artifactId>constants</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.2-SNAPSHOT</version>
 
     <name>Constants</name>
     <inceptionYear>2021</inceptionYear>
