@@ -33,7 +33,7 @@ jobs:
           VERSION=$(echo "${{ github.event.release.tag_name }}" | sed -e 's/^v//gi')
           echo "Release: updating version to ${VERSION}"
           mvn -B versions:set -DnewVersion=${VERSION} -DgenerateBackupPoms=false
-        elif [[ ! "${VERSION}" =~ "-SNAPSHOT$" ]]; then
+        elif [[ ! "${VERSION}" =~ -SNAPSHOT$ ]]; then
           echo "Missing SNAPSHOT in version: ${VERSION}"
           exit 1
         fi

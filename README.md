@@ -29,27 +29,6 @@ public class Example
 }
 ```
 
-## Rationale
-
-This library automates aggregating constants via reflection.
-Or, in other words, it allows you to collect constants matching
-specific type and name criteria in an orderly, enum-like way.
-
-Now, why not just use enums? While enums are among the most
-useful constructs offered by the Java language, they are, however,
-deliberately limited in which data they're capable of representing.
-Since all enums share a common supertype, they cannot extend any
-other class by design. 
-
-Use this library when you need the 'collected' nature of an enum
-in conjunction with the flexibility of full, unbridled objects.
-
-In order to adequately support generics, this library also includes
-various utilities for handling types, such as: a "super" type token
-(`TypeCapture`), casting utility (`Cast`), primitive auto-boxing
-utility (`Primitives`), and more. While seemingly unrelated, these
-tools are included here to avoid introducing any extra dependencies. 
-
 ## Maven
 
 ```xml
@@ -83,9 +62,35 @@ Maven Central: https://search.maven.org/artifact/com.rezzedup.util/constants
 > ```
 </details>
 
+### Documentation
+
+Javadoc: https://javadoc.io/doc/com.rezzedup.util/constants
+
 ### Shading
 
 If you intend to shade this library, please consider **relocating** the packages
 to avoid potential conflicts with other projects. This library also utilizes
 nullness annotations, which may be undesirable in a shaded uber-jar. They can
 safely be excluded, and you are encouraged to do so.
+
+## Rationale
+
+This library automates aggregating constants via reflection.
+Or, in other words, it allows you to collect constants matching
+specific type and name criteria in an orderly, enum-like way.
+
+Now, why not just use enums? While enums are among the most
+useful constructs offered by the Java language, they are, however,
+deliberately limited in which data they're capable of representing.
+Since all enums share a common supertype, they cannot extend any
+other class by design. Some data just isn't suitable for enums,
+such as instances of existing non-enum classes (or, *constants*).
+
+Use this library when you need the 'collected' nature of an enum
+in conjunction with the flexibility of full, unbridled objects.
+
+In order to adequately support generics, this library also includes
+various utilities for handling types, such as: a "super" type token
+(`TypeCapture`), casting utility (`Cast`), primitive auto-boxing
+utility (`Primitives`), and more. While seemingly unrelated, these
+tools are included here to avoid introducing any extra dependencies. 
