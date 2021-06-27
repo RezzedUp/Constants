@@ -1,8 +1,10 @@
 name: Deploy Snapshots and Publish Releases to the Maven Central Repository
 
 on:
+  # Snapshots
   push:
     branches: [main]
+  # Releases
   release:
     types: [created]
 
@@ -15,12 +17,19 @@ jobs:
       with:
         distribution: 'adopt'
         java-version: '11'
+    - name: Cache Local Maven Repository
+      uses: actions/cache@v2
+      with:
+        path: ~/.m2/repository
+        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+        restore-keys: |
+          ${{ runner.os }}-maven-
     # https://github.com/samuelmeuli/action-maven-publish/issues/20#issuecomment-663544294
     - name: Update Version in pom.xml (Release Only)
       if: github.event.release
       run: mvn -B versions:set -DnewVersion=${{ github.event.release.tag_name }} -DgenerateBackupPoms=false
     - name: Release Maven Package
-      uses: samuelmeuli/action-maven-publish@v1.4.0
+      uses: samuelmeuli/action-maven-publish@v1
       with:
         maven_args: -Ddeploy
         gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
