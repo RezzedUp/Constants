@@ -41,8 +41,7 @@ public class Example
 
 ### Versions
 
-The latest version is the same as the most recently published `tag` on
-the releases page of this repository (without the `v` prefix).
+Find available versions on the releases page of this repository.
 
 Maven Central: https://search.maven.org/artifact/com.rezzedup.util/constants
 
