@@ -24,10 +24,19 @@ jobs:
         key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
         restore-keys: |
           ${{ runner.os }}-maven-
-    # https://github.com/samuelmeuli/action-maven-publish/issues/20#issuecomment-663544294
-    - name: Update Version in pom.xml (Release Only)
-      if: github.event.release
-      run: mvn -B versions:set -DnewVersion=${{ github.event.release.tag_name }} -DgenerateBackupPoms=false
+    - name: Verify and Update Version in pom.xml
+      run: |
+        VERSION=$(mvn -B -Dexec.executable='echo' -Dexec.args='${project.version}' --non-recursive exec:exec -q)
+        echo "Found version: ${VERSION}"
+
+        if [[ "${{ github.event_name }}" == "release" ]]; then
+          VERSION=$(echo "${{ github.event.release.tag_name }}" | sed -e 's/^v//gi')
+          echo "Release: updating version to ${VERSION}"
+          mvn -B versions:set -DnewVersion=${VERSION} -DgenerateBackupPoms=false
+        elif [[ ! "${VERSION}" =~ "-SNAPSHOT$" ]]; then
+          echo "Missing SNAPSHOT in version: ${VERSION}"
+          exit 1
+        fi
     - name: Release Maven Package
       uses: samuelmeuli/action-maven-publish@v1
       with:
