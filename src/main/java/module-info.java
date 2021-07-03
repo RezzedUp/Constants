@@ -6,7 +6,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 /**
- * Utilities for {@code static final} constants.
+ * <h2>Constants</h2>
+ * <p>Utilities for {@code static final} constants.</p>
+ * <p><a href="https://github.com/RezzedUp/Constants">https://github.com/RezzedUp/Constants</a></p>
  */
 module com.rezzedup.util.constants
 {
