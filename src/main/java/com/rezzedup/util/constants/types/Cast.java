@@ -16,6 +16,7 @@ import java.util.function.Function;
 /**
  * Utilities for casting objects.
  */
+@SuppressWarnings("OptionalUsedAsFieldOrParameterType")
 public class Cast
 {
     private Cast() { throw new UnsupportedOperationException(); }
@@ -35,9 +36,7 @@ public class Cast
     public static <T> Optional<T> as(Class<T> type, @NullOr Object object)
     {
         Objects.requireNonNull(type, "type");
-        return Optional.ofNullable(object)
-            .filter(o -> type.isAssignableFrom(o.getClass()))
-            .map(o -> (T) o);
+        return (type.isInstance(object)) ? Optional.of((T) object) : Optional.empty();
     }
     
     /**
@@ -56,6 +55,17 @@ public class Cast
     {
         Objects.requireNonNull(type, "type");
         return object -> as(type, object);
+    }
+    
+    @SuppressWarnings("unchecked")
+    public static <T> Optional<T> optional(Class<T> type, Optional<?> optional)
+    {
+        Objects.requireNonNull(type, "type");
+        Objects.requireNonNull(optional, "optional");
+        
+        return (optional.isPresent() && type.isInstance(optional.get()))
+            ? (Optional<T>) optional
+            : Optional.empty();
     }
     
     /**
@@ -120,6 +130,13 @@ public class Cast
         {
             Objects.requireNonNull(type, "type");
             return object -> generic(type, object);
+        }
+        
+        @SuppressWarnings("unchecked")
+        public <T> Optional<T> genericOptional(TypeCompatible<T> type, Optional<?> optional)
+        {
+            Class<?> raw = TypeCapture.type(type).raw();
+            return (Optional<T>) optional(raw, optional);
         }
     }
 }
