@@ -101,7 +101,6 @@ public abstract class TypeCapture<T> implements TypeCompatible<T>
     private final Type type;
     private final Class<? super T> raw;
     private final List<TypeCapture<?>> generics;
-    private final int hashCode;
     
     TypeCapture(Type type)
     {
@@ -109,7 +108,6 @@ public abstract class TypeCapture<T> implements TypeCompatible<T>
         this.type = type;
         this.raw = resolveRawType(type);
         this.generics = resolveGenericParameters(type);
-        this.hashCode = type.hashCode();
     }
     
     /**
@@ -123,7 +121,6 @@ public abstract class TypeCapture<T> implements TypeCompatible<T>
         this.type = ((ParameterizedType) superclass).getActualTypeArguments()[0];
         this.raw = resolveRawType(type);
         this.generics = resolveGenericParameters(type);
-        this.hashCode = type.hashCode();
     }
     
     @Override
@@ -177,12 +174,11 @@ public abstract class TypeCapture<T> implements TypeCompatible<T>
         
         return type.equals(that.type)
             && raw.equals(that.raw)
-            && generics.equals(that.generics)
-            && hashCode == that.hashCode;
+            && generics.equals(that.generics);
     }
     
     @Override
-    public final int hashCode() { return hashCode; }
+    public final int hashCode() { return type.hashCode(); }
     
     @SuppressWarnings("unchecked")
     private static <T> Class<? super T> resolveRawType(Type type)
