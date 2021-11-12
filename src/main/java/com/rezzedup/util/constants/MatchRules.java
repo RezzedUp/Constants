@@ -65,7 +65,7 @@ public class MatchRules
 	 * @return new instance containing the amended rules
 	 * or itself if no new rules are specified
 	 */
-	public MatchRules all(String... required)
+	public MatchRules all(String ... required)
 	{
 		if (required.length <= 0) { return this; }
 		Set<String> allModified = new HashSet<>(all);
@@ -85,7 +85,7 @@ public class MatchRules
 	 * @return new instance containing the amended rules
 	 * or itself if no new rules are specified
 	 */
-	public MatchRules any(String... optional)
+	public MatchRules any(String ... optional)
 	{
 		if (optional.length <= 0) { return this; }
 		Set<String> anyModified = new HashSet<>(any);
@@ -103,7 +103,7 @@ public class MatchRules
 	 * @return new instance containing the amended rules
 	 * or itself if no new rules are specified
 	 */
-	public MatchRules not(String... excluded)
+	public MatchRules not(String ... excluded)
 	{
 		if (excluded.length <= 0) { return this; }
 		Set<String> notModified = new HashSet<>(not);
