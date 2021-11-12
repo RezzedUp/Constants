@@ -18,45 +18,44 @@ import java.util.Set;
  */
 public class Primitives
 {
-    private Primitives() { throw new UnsupportedOperationException(); }
-    
-    private static final Set<Class<? extends Number>> NUMBERS =
-        Set.of(
-            Byte.class, Short.class, Integer.class,
-            Long.class, Float.class, Double.class
-        );
-    
-    private static final Class<Boolean> BOOLEAN = Boolean.class;
-    
-    private static final Class<Character> CHARACTER = Character.class;
-    
-    @AggregatedResult
-    private static final Set<Class<?>> BOXES =
-        Aggregates.set(Primitives.class, Wildcards.CLASS, Aggregates.matching().collections(true));
-    
-    /**
-     * Gets all boxed primitive types.
-     *
-     * @return  an immutable {@code Set} containing all
-     *          boxed primitive types
-     */
-    public static Set<Class<?>> boxedTypes()
-    {
-        return BOXES;
-    }
-    
-    /**
-     * Checks if an object is an instance of a
-     * boxed primitive.
-     *
-     * @param object    the object
-     *
-     * @return  {@code true} if the object isn't null and
-     *          its class is a boxed primitive type,
-     *          otherwise {@code false}
-     */
-    public static boolean isBoxed(@NullOr Object object)
-    {
-        return object != null && boxedTypes().contains(object.getClass());
-    }
+	private Primitives() { throw new UnsupportedOperationException(); }
+	
+	private static final Set<Class<? extends Number>> NUMBERS =
+		Set.of(
+			Byte.class, Short.class, Integer.class,
+			Long.class, Float.class, Double.class
+		);
+	
+	private static final Class<Boolean> BOOLEAN = Boolean.class;
+	
+	private static final Class<Character> CHARACTER = Character.class;
+	
+	@AggregatedResult
+	private static final Set<Class<?>> BOXES =
+	Aggregates.set(Primitives.class, Wildcards.CLASS, Aggregates.matching().collections(true));
+	
+	/**
+	 * Gets all boxed primitive types.
+	 *
+	 * @return an immutable {@code Set} containing all
+	 * boxed primitive types
+	 */
+	public static Set<Class<?>> boxedTypes()
+	{
+		return BOXES;
+	}
+	
+	/**
+	 * Checks if an object is an instance of a
+	 * boxed primitive.
+	 *
+	 * @param object the object
+	 * @return {@code true} if the object isn't null and
+	 * its class is a boxed primitive type,
+	 * otherwise {@code false}
+	 */
+	public static boolean isBoxed(@NullOr Object object)
+	{
+		return object != null && boxedTypes().contains(object.getClass());
+	}
 }
