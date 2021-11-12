@@ -8,6 +8,7 @@
 package com.rezzedup.util.constants.types;
 
 import com.rezzedup.util.constants.Aggregates;
+import com.rezzedup.util.constants.MatchRules;
 import com.rezzedup.util.constants.annotations.AggregatedResult;
 import pl.tlinkowski.annotation.basic.NullOr;
 
@@ -32,7 +33,7 @@ public class Primitives
 	
 	@AggregatedResult
 	private static final Set<Class<?>> BOXES =
-	Aggregates.set(Primitives.class, Wildcards.CLASS, Aggregates.matching().collections(true));
+		Aggregates.set(Primitives.class, Wildcards.CLASS, MatchRules.of().collections(true));
 	
 	/**
 	 * Gets all boxed primitive types.

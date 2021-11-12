@@ -47,15 +47,14 @@ public class AggregatesTests
 		
 		@AggregatedResult
 		static final List<String> NAMES =
-		Aggregates.list(SimpleData.class, TypeCapture.type(String.class), Aggregates.matching().all("NAME"));
+		Aggregates.list(SimpleData.class, TypeCapture.type(String.class), MatchRules.of().all("NAME"));
 		
 		@AggregatedResult
 		static final Set<String> WORDS =
 			Aggregates.set(
 				SimpleData.class,
 				TypeCapture.type(String.class),
-				Aggregates.matching()
-					.all("WORD").not("CURSE").collections(true)
+				MatchRules.of().all("WORD").not("CURSE").collections(true)
 			);
 	}
 	
@@ -84,7 +83,7 @@ public class AggregatesTests
 		public void namesAreEquivalent()
 		{
 			List<?> alsoNames =
-			Aggregates.list(SimpleData.class, TypeCapture.type(String.class), Aggregates.matching().all("NAME"));
+			Aggregates.list(SimpleData.class, TypeCapture.type(String.class), MatchRules.of().all("NAME"));
 			
 			assertEquals(SimpleData.NAMES, alsoNames);
 		}
@@ -110,11 +109,10 @@ public class AggregatesTests
 		public void rudeWords()
 		{
 			Set<String> rude = Aggregates.set(
-					SimpleData.class,
-					TypeCapture.type(String.class),
-					Aggregates.matching()
-						.any("WORD").not("GREETING", "MAGIC").collections(true)
-				);
+				SimpleData.class,
+				TypeCapture.type(String.class),
+				MatchRules.of().any("WORD").not("GREETING", "MAGIC").collections(true)
+			);
 			
 			assertEquals(5, rude.size());
 			
@@ -135,7 +133,7 @@ public class AggregatesTests
 			
 			// CURSED_NUMBER + all 3 CURSE_WORDS
 			List<?> curses = Aggregates.list(
-				SimpleData.class, TypeCapture.any(), Aggregates.matching().all("CURSE").collections(true)
+				SimpleData.class, TypeCapture.any(), MatchRules.of().all("CURSE").collections(true)
 			);
 			
 			assertEquals(4, curses.size());
