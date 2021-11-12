@@ -23,8 +23,7 @@ public class Constants
 	private Constants() { throw new UnsupportedOperationException(); }
 	
 	/**
-	 * Checks whether or not a field is a
-	 * {@code static final} constant.
+	 * Checks whether a field is a {@code static final} constant.
 	 *
 	 * @param field the possible constant
 	 * @return {@code true} if the field is {@code static}

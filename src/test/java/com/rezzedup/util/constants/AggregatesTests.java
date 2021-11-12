@@ -47,15 +47,17 @@ public class AggregatesTests
 		
 		@AggregatedResult
 		static final List<String> NAMES =
-		Aggregates.list(SimpleData.class, TypeCapture.type(String.class), MatchRules.of().all("NAME"));
+			Aggregates.fromThisClass()
+				.constantsOfType(String.class)
+				.matching(MatchRules.of().all("NAME"))
+				.toList();
 		
 		@AggregatedResult
 		static final Set<String> WORDS =
-			Aggregates.set(
-				SimpleData.class,
-				TypeCapture.type(String.class),
-				MatchRules.of().all("WORD").not("CURSE").collections(true)
-			);
+			Aggregates.from(SimpleData.class)
+				.constantsOfType(String.class)
+				.matching(MatchRules.of().all("WORD").not("CURSE").collections(true))
+				.toSet();
 	}
 	
 	@Nested

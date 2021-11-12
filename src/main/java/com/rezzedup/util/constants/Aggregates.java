@@ -69,13 +69,13 @@ public class Aggregates
 					if (value instanceof Collection && rules.isAggregatingFromCollections())
 					{
 						((Collection<?>) value).stream()
-						.flatMap(element -> Cast.unsafe().generic(capture, element).stream())
-						.forEach(element -> consumer.accept(field.getName(), element));
+							.flatMap(element -> Cast.unsafe().generic(capture, element).stream())
+							.forEach(element -> consumer.accept(field.getName(), element));
 					}
 					else
 					{
 						Cast.unsafe().generic(capture, value)
-						.ifPresent(element -> consumer.accept(field.getName(), element));
+							.ifPresent(element -> consumer.accept(field.getName(), element));
 					}
 				}
 				catch (Exception e) { throw new AggregationException(e); }
@@ -188,4 +188,90 @@ public class Aggregates
 		return list(source, type, MatchRules.DEFAULT);
 	}
 	
+	public static Pending.ConstantType from(Class<?> sourceClass)
+	{
+		return new Aggregator<>(sourceClass);
+	}
+	
+	public static Pending.ConstantType fromThisClass()
+	{
+		for (StackTraceElement element : Thread.currentThread().getStackTrace())
+		{
+			String name = element.getClassName();
+			
+			if (element.isNativeMethod()) { continue; }
+			if (name.startsWith("java.")) { continue; }
+			if (name.equals(Aggregates.class.getName())) { continue; }
+			
+			try { return from(Class.forName(name)); }
+			catch (ClassNotFoundException e) { throw new AggregationException(e); }
+		}
+		
+		throw new IllegalStateException("Could not resolve class");
+	}
+	
+	public interface Pending
+	{
+		interface ConstantType extends Pending
+		{
+			<T> Aggregation<T> constantsOfType(TypeCompatible<T> type);
+			
+			default <T> Aggregation<T> constantsOfType(Class<T> clazz)
+			{
+				return constantsOfType(TypeCapture.type(clazz));
+			}
+		}
+		
+		interface Aggregation<T> extends Pending
+		{
+			Aggregation<T> matching(MatchRules rules);
+			
+			<C extends Collection<T>> C toCollection(Supplier<C> constructor);
+			
+			default List<T> toList()
+			{
+				return List.copyOf(toCollection(ArrayList::new));
+			}
+			
+			default Set<T> toSet()
+			{
+				return Set.copyOf(toCollection(HashSet::new));
+			}
+		}
+	}
+	
+	private static class Aggregator<T> implements Pending.ConstantType, Pending.Aggregation<T>
+	{
+		private final Class<?> sourceClass;
+		private @NullOr TypeCapture<T> type = null;
+		private MatchRules rules = MatchRules.DEFAULT;
+		
+		Aggregator(Class<?> sourceClass)
+		{
+			this.sourceClass = Objects.requireNonNull(sourceClass, "sourceClass");
+		}
+		
+		@SuppressWarnings("unchecked")
+		@Override
+		public <P> Pending.Aggregation<P> constantsOfType(TypeCompatible<P> type)
+		{
+			Objects.requireNonNull(type, "type");
+			this.type = (TypeCapture<T>) TypeCapture.type(type);
+			return (Aggregator<P>) this;
+		}
+		
+		@Override
+		public Aggregator<T> matching(MatchRules rules)
+		{
+			this.rules = Objects.requireNonNull(rules, "rules");
+			return this;
+		}
+		
+		@Override
+		public <C extends Collection<T>> C toCollection(Supplier<C> constructor)
+		{
+			if (type == null) { throw new IllegalStateException("Skipped step: Pending.ConstantType"); }
+			return collect(sourceClass, type, rules, constructor);
+		}
+	}
 }
