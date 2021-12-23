@@ -102,6 +102,7 @@ public class Aggregates
 	 * @return an immutable copy of the constructed {@code Set}
 	 * containing the matched constants
 	 */
+	@Deprecated(forRemoval = true)
 	public static <T> Set<T> set(Class<?> source, TypeCompatible<T> type, MatchRules rules, Supplier<Set<T>> constructor)
 	{
 		return Set.copyOf(collect(source, type, rules, constructor));
@@ -118,6 +119,7 @@ public class Aggregates
 	 * @return an immutable {@code Set} containing
 	 * the matched constants
 	 */
+	@Deprecated(forRemoval = true)
 	public static <T> Set<T> set(Class<?> source, TypeCompatible<T> type, MatchRules rules)
 	{
 		return set(source, type, rules, HashSet::new);
@@ -134,6 +136,7 @@ public class Aggregates
 	 * @return an immutable {@code Set} containing
 	 * the matched constants
 	 */
+	@Deprecated(forRemoval = true)
 	public static <T> Set<T> set(Class<?> source, TypeCompatible<T> type)
 	{
 		return set(source, type, MatchRules.DEFAULT);
@@ -151,6 +154,7 @@ public class Aggregates
 	 * @return an immutable copy of the constructed {@code List}
 	 * containing the matched constants
 	 */
+	@Deprecated(forRemoval = true)
 	public static <T> List<T> list(Class<?> source, TypeCompatible<T> type, MatchRules rules, Supplier<List<T>> constructor)
 	{
 		return List.copyOf(collect(source, type, rules, constructor));
@@ -167,6 +171,7 @@ public class Aggregates
 	 * @return an immutable {@code List} containing
 	 * the matched constants
 	 */
+	@Deprecated(forRemoval = true)
 	public static <T> List<T> list(Class<?> source, TypeCompatible<T> type, MatchRules rules)
 	{
 		return list(source, type, rules, ArrayList::new);
@@ -183,6 +188,7 @@ public class Aggregates
 	 * @return an immutable {@code List} containing
 	 * the matched constants
 	 */
+	@Deprecated(forRemoval = true)
 	public static <T> List<T> list(Class<?> source, TypeCompatible<T> type)
 	{
 		return list(source, type, MatchRules.DEFAULT);

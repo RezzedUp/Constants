@@ -7,12 +7,12 @@
  */
 package com.rezzedup.util.constants.types;
 
-import com.rezzedup.util.constants.Aggregates;
-import com.rezzedup.util.constants.MatchRules;
-import com.rezzedup.util.constants.annotations.AggregatedResult;
 import pl.tlinkowski.annotation.basic.NullOr;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
+import java.util.function.BiConsumer;
 
 /**
  * Constants and utilities for boxed primitives.
@@ -21,39 +21,58 @@ public class Primitives
 {
 	private Primitives() { throw new UnsupportedOperationException(); }
 	
-	private static final Set<Class<? extends Number>> NUMBERS =
-		Set.of(
-			Byte.class, Short.class, Integer.class,
-			Long.class, Float.class, Double.class
-		);
+	private static final Map<Class<?>, Class<?>> PRIMITIVE_TO_BOX;
+	private static final Map<Class<?>, Class<?>> BOX_TO_PRIMITIVE;
 	
-	private static final Class<Boolean> BOOLEAN = Boolean.class;
+	static
+	{
+		Map<Class<?>, Class<?>> boxToPrimitive = new HashMap<>();
+		Map<Class<?>, Class<?>> primitiveToBox = new HashMap<>();
+		
+		BiConsumer<Class<?>, Class<?>> types = (primitive, box) -> {
+			primitiveToBox.put(primitive, box);
+			boxToPrimitive.put(box, primitive);
+		};
+		
+		types.accept(byte.class, Byte.class);
+		types.accept(short.class, Short.class);
+		types.accept(int.class, Integer.class);
+		types.accept(long.class, Long.class);
+		types.accept(float.class, Float.class);
+		types.accept(double.class, Double.class);
+		types.accept(boolean.class, Boolean.class);
+		types.accept(char.class, Character.class);
+		
+		PRIMITIVE_TO_BOX = Map.copyOf(primitiveToBox);
+		BOX_TO_PRIMITIVE = Map.copyOf(boxToPrimitive);
+	}
 	
-	private static final Class<Character> CHARACTER = Character.class;
-	
-	@AggregatedResult
-	private static final Set<Class<?>> BOXES =
-		Aggregates.set(Primitives.class, Wildcards.CLASS, MatchRules.of().collections(true));
+	/**
+	 * Gets all directly primitive types.
+	 *
+	 * @return an immutable set containing all primitive types
+	 */
+	public static Set<Class<?>> primitiveTypes()
+	{
+		return PRIMITIVE_TO_BOX.keySet();
+	}
 	
 	/**
 	 * Gets all boxed primitive types.
 	 *
-	 * @return an immutable {@code Set} containing all
-	 * boxed primitive types
+	 * @return	an immutable set containing all boxed primitive types
 	 */
 	public static Set<Class<?>> boxedTypes()
 	{
-		return BOXES;
+		return BOX_TO_PRIMITIVE.keySet();
 	}
 	
 	/**
-	 * Checks if an object is an instance of a
-	 * boxed primitive.
+	 * Checks if an object is an instance of a boxed primitive.
 	 *
 	 * @param object the object
-	 * @return {@code true} if the object isn't null and
-	 * its class is a boxed primitive type,
-	 * otherwise {@code false}
+	 * @return	{@code true} if the object isn't null and its class is a
+	 *			boxed primitive type, otherwise {@code false}
 	 */
 	public static boolean isBoxed(@NullOr Object object)
 	{
