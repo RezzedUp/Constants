@@ -15,8 +15,7 @@ import java.lang.annotation.Target;
 /**
  * Denotes the result of aggregation.
  *
- * <p>Constants with this annotation will
- * <b>not</b> be aggregated.</p>
+ * <p>Constants with this annotation will <b>not</b> be aggregated.</p>
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)

@@ -70,9 +70,8 @@ public class Primitives
 	/**
 	 * Checks if an object is an instance of a boxed primitive.
 	 *
-	 * @param object the object
-	 * @return	{@code true} if the object isn't null and its class is a
-	 *			boxed primitive type, otherwise {@code false}
+	 * @param object	the object
+	 * @return	{@code true} if the object isn't null and its class is a boxed primitive type, otherwise {@code false}
 	 */
 	public static boolean isBoxed(@NullOr Object object)
 	{

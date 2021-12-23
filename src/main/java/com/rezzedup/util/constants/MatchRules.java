@@ -15,23 +15,19 @@ import java.util.Objects;
 import java.util.Set;
 
 /**
- * Immutable criteria for filtering constants based on
- * their name and other settings for aggregation.
+ * Immutable criteria for filtering constants based on their name and other settings for aggregation.
  */
 public class MatchRules
 {
 	static final MatchRules DEFAULT = new MatchRules();
 	
 	/**
-	 * Specifies criteria for filtering constants
-	 * based on their name and other settings. By default,
-	 * the rules will match all names but won't visit
-	 * the contents of constant collections.
+	 * Specifies criteria for filtering constants based on their name and other settings. By default,
+	 * the rules will match all names but won't visit the contents of constant collections.
 	 *
-	 * <p>It should be noted that since all {@link MatchRules}
-	 * instances are immutable, the same default instance
-	 * is always returned by this method. Any additional
-	 * criteria will construct entirely new instances.</p>
+	 * <p>It should be noted that since all {@link MatchRules} instances are immutable, the same default
+	 * instance is always returned by this method. Any additional criteria will construct entirely
+	 * new instances.</p>
 	 *
 	 * @return the default immutable rules instance
 	 */
@@ -56,14 +52,11 @@ public class MatchRules
 	}
 	
 	/**
-	 * Appends required strings to the existing rules.
-	 * A constant will only match this rule if its name
+	 * Appends required strings to the existing rules. A constant will only match this rule if its name
 	 * contains <b>all</b> of the specified strings.
 	 *
-	 * @param required all the strings a constant name
-	 *                 must contain in order to match
-	 * @return new instance containing the amended rules
-	 * or itself if no new rules are specified
+	 * @param required	all the strings a constant name must contain in order to match
+	 * @return	new instance containing the amended rules or itself if no new rules are specified
 	 */
 	public MatchRules all(String ... required)
 	{
@@ -74,16 +67,11 @@ public class MatchRules
 	}
 	
 	/**
-	 * Appends optional strings to the existing rules.
-	 * A constant will only match this rule if its name
-	 * contains <b>any</b> (at least one) of the
-	 * specified strings.
+	 * Appends optional strings to the existing rules. A constant will only match this rule if its name
+	 * contains <b>any</b> (at least one) of the specified strings.
 	 *
-	 * @param optional strings a constant name is expected
-	 *                 to contain at least one of in order
-	 *                 to match
-	 * @return new instance containing the amended rules
-	 * or itself if no new rules are specified
+	 * @param optional	strings a constant name is expected to contain at least one of in order to match
+	 * @return	new instance containing the amended rules or itself if no new rules are specified
 	 */
 	public MatchRules any(String ... optional)
 	{
@@ -94,14 +82,11 @@ public class MatchRules
 	}
 	
 	/**
-	 * Appends excluded strings to the existing rules.
-	 * A constant will only match this rule if its name
+	 * Appends excluded strings to the existing rules. A constant will only match this rule if its name
 	 * contains <b>none</b> of the specified strings.
 	 *
-	 * @param excluded all the strings a constant name
-	 *                 must not contain in order to match
-	 * @return new instance containing the amended rules
-	 * or itself if no new rules are specified
+	 * @param excluded	all the strings a constant name must not contain in order to match
+	 * @return	new instance containing the amended rules or itself if no new rules are specified
 	 */
 	public MatchRules not(String ... excluded)
 	{
@@ -112,14 +97,10 @@ public class MatchRules
 	}
 	
 	/**
-	 * Sets whether or not the contents of constant
-	 * collections should be aggregated.
+	 * Sets whether the contents contained within constant collections should be aggregated.
 	 *
-	 * @param visit {@code true} if collections should
-	 *              be visited or {@code false} if
-	 *              they should not
-	 * @return new instance containing the amended rules
-	 * or itself if no new rules are specified
+	 * @param visit		{@code true} if collections should be visited or {@code false} to disable
+	 * @return	new instance containing the amended rules or itself if no new rules are specified
 	 */
 	public MatchRules collections(boolean visit)
 	{
@@ -128,12 +109,10 @@ public class MatchRules
 	}
 	
 	/**
-	 * Checks if the provided name matches the
-	 * criteria contained within these rules.
+	 * Checks if the provided name matches the criteria contained within these rules.
 	 *
-	 * @param name the name to check
-	 * @return {@code true} if the name matches,
-	 * otherwise {@code false}
+	 * @param name	the name to check
+	 * @return	{@code true} if the name matches, otherwise {@code false}
 	 */
 	public boolean matches(String name)
 	{
@@ -143,10 +122,9 @@ public class MatchRules
 	}
 	
 	/**
-	 * Gets whether aggregating from the contents of constant
-	 * collections is allowed by these rules or not.
+	 * Gets whether aggregating from the contents of constant collections is allowed by these rules or not.
 	 *
-	 * @return {@code true} if allowed, otherwise {@code false}
+	 * @return	{@code true} if allowed, otherwise {@code false}
 	 */
 	public boolean isAggregatingFromCollections() { return collections; }
 	
@@ -154,10 +132,10 @@ public class MatchRules
 	public String toString()
 	{
 		return "MatchRules{" +
-			"all=" + all +
-			", any=" + any +
-			", not=" + not +
-			", collections=" + collections +
+			"all=" + all + ", " +
+			"any=" + any + ", " +
+			"not=" + not + ", " +
+			"collections=" + collections +
 			'}';
 	}
 	

@@ -36,14 +36,13 @@ public class Aggregates
 		Set.of(AggregatedResult.class, NotAggregated.class);
 	
 	/**
-	 * Visits all constants of a specific
-	 * type matching the provided rules.
+	 * Visits all constants of a specific type matching the provided rules.
 	 *
-	 * @param source   the class containing constants
-	 * @param type     type token of the type
-	 * @param rules    criteria for filtering constants
-	 * @param consumer constant consumer
-	 * @param <T>      the type
+	 * @param source	the class containing constants
+	 * @param type		type token of the type
+	 * @param rules		criteria for filtering constants
+	 * @param consumer	constant consumer
+	 * @param <T>		the type
 	 */
 	public static <T> void visit(Class<?> source, TypeCompatible<T> type, MatchRules rules, BiConsumer<String, T> consumer)
 	{
@@ -91,16 +90,14 @@ public class Aggregates
 	}
 	
 	/**
-	 * Collects all constants of a specific type matching the
-	 * provided rules into an immutable {@code Set}.
+	 * Collects all constants of a specific type matching the provided rules into an immutable {@code Set}.
 	 *
-	 * @param source      the class containing constants
-	 * @param type        type token of the type
-	 * @param rules       criteria for filtering constants
-	 * @param constructor new {@code Set} constructor
-	 * @param <T>         the type
-	 * @return an immutable copy of the constructed {@code Set}
-	 * containing the matched constants
+	 * @param source		the class containing constants
+	 * @param type			type token of the type
+	 * @param rules			criteria for filtering constants
+	 * @param constructor	new {@code Set} constructor
+	 * @param <T>			the type
+	 * @return	an immutable copy of the constructed set containing the matched constants
 	 */
 	@Deprecated(forRemoval = true)
 	public static <T> Set<T> set(Class<?> source, TypeCompatible<T> type, MatchRules rules, Supplier<Set<T>> constructor)
@@ -109,15 +106,13 @@ public class Aggregates
 	}
 	
 	/**
-	 * Collects all constants of a specific type matching the
-	 * provided rules into an immutable {@code Set}.
+	 * Collects all constants of a specific type matching the provided rules into an immutable {@code Set}.
 	 *
-	 * @param source the class containing constants
-	 * @param type   type token of the type
-	 * @param rules  criteria for filtering constants
-	 * @param <T>    the type
-	 * @return an immutable {@code Set} containing
-	 * the matched constants
+	 * @param source	the class containing constants
+	 * @param type		type token of the type
+	 * @param rules		criteria for filtering constants
+	 * @param <T>		the type
+	 * @return an immutable set containing the matched constants
 	 */
 	@Deprecated(forRemoval = true)
 	public static <T> Set<T> set(Class<?> source, TypeCompatible<T> type, MatchRules rules)
@@ -126,15 +121,13 @@ public class Aggregates
 	}
 	
 	/**
-	 * Collects all constants of a specific type into an
-	 * immutable {@code Set}. Constants within collections
-	 * will <b>not</b> be aggregated.
+	 * Collects all constants of a specific type into an immutable {@code Set}.
+	 * Constants within collections will <b>not</b> be aggregated.
 	 *
-	 * @param source the class containing constants
-	 * @param type   type token of the type
-	 * @param <T>    the type
-	 * @return an immutable {@code Set} containing
-	 * the matched constants
+	 * @param source	the class containing constants
+	 * @param type		type token of the type
+	 * @param <T>		the type
+	 * @return	an immutable set containing the matched constants
 	 */
 	@Deprecated(forRemoval = true)
 	public static <T> Set<T> set(Class<?> source, TypeCompatible<T> type)
@@ -143,16 +136,14 @@ public class Aggregates
 	}
 	
 	/**
-	 * Collects all constants of a specific type matching the
-	 * provided rules into an immutable {@code List}.
+	 * Collects all constants of a specific type matching the provided rules into an immutable {@code List}.
 	 *
-	 * @param source      the class containing constants
-	 * @param type        type token of the type
-	 * @param rules       criteria for filtering constants
-	 * @param constructor new {@code List} constructor
-	 * @param <T>         the type
-	 * @return an immutable copy of the constructed {@code List}
-	 * containing the matched constants
+	 * @param source		the class containing constants
+	 * @param type			type token of the type
+	 * @param rules			criteria for filtering constants
+	 * @param constructor	new {@code List} constructor
+	 * @param <T>			the type
+	 * @return	an immutable copy of the constructed list containing the matched constants
 	 */
 	@Deprecated(forRemoval = true)
 	public static <T> List<T> list(Class<?> source, TypeCompatible<T> type, MatchRules rules, Supplier<List<T>> constructor)
@@ -161,15 +152,13 @@ public class Aggregates
 	}
 	
 	/**
-	 * Collects all constants of a specific type matching the
-	 * provided rules into an immutable {@code List}.
+	 * Collects all constants of a specific type matching the provided rules into an immutable {@code List}.
 	 *
-	 * @param source the class containing constants
-	 * @param type   type token of the type
-	 * @param rules  criteria for filtering constants
-	 * @param <T>    the type
-	 * @return an immutable {@code List} containing
-	 * the matched constants
+	 * @param source	the class containing constants
+	 * @param type		type token of the type
+	 * @param rules		criteria for filtering constants
+	 * @param <T>		the type
+	 * @return	an immutable list containing the matched constants
 	 */
 	@Deprecated(forRemoval = true)
 	public static <T> List<T> list(Class<?> source, TypeCompatible<T> type, MatchRules rules)
@@ -178,15 +167,13 @@ public class Aggregates
 	}
 	
 	/**
-	 * Collects all constants of a specific type into an
-	 * immutable {@code List}. Constants within collections
-	 * will <b>not</b> be aggregated.
+	 * Collects all constants of a specific type into an immutable {@code List}.
+	 * Constants within collections will <b>not</b> be aggregated.
 	 *
-	 * @param source the class containing constants
-	 * @param type   type token of the type
-	 * @param <T>    the type
-	 * @return an immutable {@code List} containing
-	 * the matched constants
+	 * @param source	the class containing constants
+	 * @param type		type token of the type
+	 * @param <T>		the type
+	 * @return	an immutable list containing the matched constants
 	 */
 	@Deprecated(forRemoval = true)
 	public static <T> List<T> list(Class<?> source, TypeCompatible<T> type)

@@ -25,9 +25,8 @@ public class Constants
 	/**
 	 * Checks whether a field is a {@code static final} constant.
 	 *
-	 * @param field the possible constant
-	 * @return {@code true} if the field is {@code static}
-	 * and {@code final}, otherwise {@code false}
+	 * @param field		the possible constant
+	 * @return	{@code true} if the field is {@code static} and {@code final}, otherwise {@code false}
 	 */
 	public static boolean isConstant(@NullOr Field field)
 	{
@@ -39,12 +38,10 @@ public class Constants
 	/**
 	 * Streams all the constants of a specific class.
 	 *
-	 * <p><b>Note:</b> fields in the stream may not
-	 * necessarily be accessible.</p>
+	 * <p><b>Note:</b> fields in the stream may not necessarily be accessible.</p>
 	 *
-	 * @param clazz the class containing constants
-	 * @return a stream containing all constant fields
-	 * from the provided class
+	 * @param clazz		the class containing constants
+	 * @return	a stream containing all constant fields from the provided class
 	 * @see #isConstant(Field)
 	 */
 	public static Stream<Field> all(Class<?> clazz)
@@ -57,9 +54,8 @@ public class Constants
 	 * Streams accessible {@code public} constants
 	 * of a specific class.
 	 *
-	 * @param clazz the class containing constants
-	 * @return a stream containing public constant
-	 * fields from the provided class
+	 * @param clazz		the class containing constants
+	 * @return	a stream containing public constant fields from the provided class
 	 * @see #isConstant(Field)
 	 */
 	public static Stream<Field> accessible(Class<?> clazz)

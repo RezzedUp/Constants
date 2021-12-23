@@ -10,10 +10,9 @@ package com.rezzedup.util.constants.types;
 import java.lang.reflect.Type;
 
 /**
- * Conversion layer for alternative
- * type token implementations.
+ * Conversion layer for alternative type token implementations.
  *
- * @param <T> the generic type
+ * @param <T>	the generic type
  */
 @FunctionalInterface
 public interface TypeCompatible<T>
@@ -21,7 +20,7 @@ public interface TypeCompatible<T>
 	/**
 	 * Gets the underlying type.
 	 *
-	 * @return the type
+	 * @return	the type
 	 */
 	Type type();
 }
