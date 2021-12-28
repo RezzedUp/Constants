@@ -24,6 +24,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -190,6 +191,8 @@ public class Aggregates
 		{
 			Aggregation<T> matching(MatchRules rules);
 			
+			Aggregation<T> matching(UnaryOperator<MatchRules> match);
+			
 			Stream<Constant<T>> stream();
 			
 			default <C extends Collection<T>> C toCollection(Supplier<C> constructor)
@@ -237,6 +240,14 @@ public class Aggregates
 		}
 		
 		@Override
+		public Aggregation<T> matching(UnaryOperator<MatchRules> match)
+		{
+			Objects.requireNonNull(match, "match");
+			this.rules = Objects.requireNonNull(match.apply(rules));
+			return this;
+		}
+		
+		@Override
 		public Stream<Constant<T>> stream()
 		{
 			if (type == null) { throw new IllegalStateException("Skipped step: Pending.ConstantType"); }
@@ -261,9 +272,8 @@ public class Aggregates
 						}
 						else
 						{
-							return Cast.unsafe().generic(type, value)
-								.map(element -> new Constants.Impl<>(source, field.getName(), element, false))
-								.stream();
+							return Cast.unsafe().generic(type, value).stream()
+								.map(element -> new Constants.Impl<>(source, field.getName(), element, false));
 						}
 					}
 					catch (Exception e) { throw new AggregationException(e); }

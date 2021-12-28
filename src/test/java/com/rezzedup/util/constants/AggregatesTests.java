@@ -57,7 +57,7 @@ public class AggregatesTests
 		static final Set<String> WORDS =
 			Aggregates.from(SimpleData.class)
 				.constantsOfType(String.class)
-				.matching(MatchRules.of().all("WORD").not("CURSE").collections(true))
+				.matching(match -> match.all("WORD").not("CURSE").collections(true))
 				.toSet();
 	}
 	
@@ -87,7 +87,7 @@ public class AggregatesTests
 		{
 			List<?> alsoNames = Aggregates.from(SimpleData.class)
 				.constantsOfType(String.class)
-				.matching(MatchRules.of().all("NAME"))
+				.matching(match -> match.all("NAME"))
 				.toList();
 			
 			assertEquals(SimpleData.NAMES, alsoNames);
@@ -138,7 +138,7 @@ public class AggregatesTests
 			// CURSED_NUMBER + all 3 CURSE_WORDS
 			List<?> curses = Aggregates.from(SimpleData.class)
 				.constantsOfType(TypeCapture.any())
-				.matching(MatchRules.of().all("CURSE").collections(true))
+				.matching(match -> match.all("CURSE").collections(true))
 				.toList();
 			
 			assertEquals(4, curses.size());
