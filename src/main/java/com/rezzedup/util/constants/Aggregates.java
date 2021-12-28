@@ -22,8 +22,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Aggregates constants.
@@ -44,49 +46,18 @@ public class Aggregates
 	 * @param consumer	constant consumer
 	 * @param <T>		the type
 	 */
-	public static <T> void visit(Class<?> source, TypeCompatible<T> type, MatchRules rules, BiConsumer<String, T> consumer)
+	@Deprecated(forRemoval = true)
+	public static <T> void visit(Class<?> source, TypeCompatible<T> type, MatchRules rules, Consumer<Constant<T>> consumer)
 	{
-		Objects.requireNonNull(source, "source");
-		Objects.requireNonNull(type, "type");
-		Objects.requireNonNull(rules, "rules");
 		Objects.requireNonNull(consumer, "consumer");
-		
-		TypeCapture<T> capture = TypeCapture.type(type);
-		
-		Constants.all(source)
-			.filter(field -> rules.matches(field.getName()))
-			.filter(field -> SKIP_ANNOTATIONS.stream().noneMatch(field::isAnnotationPresent))
-			.forEach(field ->
-			{
-				field.setAccessible(true);
-				
-				try
-				{
-					@NullOr Object value = field.get(null);
-					if (value == null) { return; }
-					
-					if (value instanceof Collection && rules.isAggregatingFromCollections())
-					{
-						((Collection<?>) value).stream()
-							.flatMap(element -> Cast.unsafe().generic(capture, element).stream())
-							.forEach(element -> consumer.accept(field.getName(), element));
-					}
-					else
-					{
-						Cast.unsafe().generic(capture, value)
-							.ifPresent(element -> consumer.accept(field.getName(), element));
-					}
-				}
-				catch (Exception e) { throw new AggregationException(e); }
-			});
+		from(source).constantsOfType(type).matching(rules).stream().forEach(consumer);
 	}
 	
 	private static <T, C extends Collection<T>> C collect(Class<?> source, TypeCompatible<T> type, MatchRules rules, Supplier<C> constructor)
 	{
 		Objects.requireNonNull(constructor, "constructor");
-		C collection = Objects.requireNonNull(constructor.get(), "constructor returned null");
-		visit(source, type, rules, (name, element) -> collection.add(element));
-		return collection;
+		return from(source).constantsOfType(type).matching(rules).stream()
+			.map(Constant::value).collect(Collectors.toCollection(constructor));
 	}
 	
 	/**
@@ -219,7 +190,12 @@ public class Aggregates
 		{
 			Aggregation<T> matching(MatchRules rules);
 			
-			<C extends Collection<T>> C toCollection(Supplier<C> constructor);
+			Stream<Constant<T>> stream();
+			
+			default <C extends Collection<T>> C toCollection(Supplier<C> constructor)
+			{
+				return stream().map(Constant::value).collect(Collectors.toCollection(constructor));
+			}
 			
 			default List<T> toList()
 			{
@@ -235,13 +211,13 @@ public class Aggregates
 	
 	private static class Aggregator<T> implements Pending.ConstantType, Pending.Aggregation<T>
 	{
-		private final Class<?> sourceClass;
+		private final Class<?> source;
 		private @NullOr TypeCapture<T> type = null;
 		private MatchRules rules = MatchRules.DEFAULT;
 		
-		Aggregator(Class<?> sourceClass)
+		Aggregator(Class<?> source)
 		{
-			this.sourceClass = Objects.requireNonNull(sourceClass, "sourceClass");
+			this.source = Objects.requireNonNull(source, "source");
 		}
 		
 		@SuppressWarnings("unchecked")
@@ -261,10 +237,37 @@ public class Aggregates
 		}
 		
 		@Override
-		public <C extends Collection<T>> C toCollection(Supplier<C> constructor)
+		public Stream<Constant<T>> stream()
 		{
 			if (type == null) { throw new IllegalStateException("Skipped step: Pending.ConstantType"); }
-			return collect(sourceClass, type, rules, constructor);
+			
+			return Constants.in(source).streamAllFields()
+				.filter(field -> rules.matches(field.getName()))
+				.filter(field -> SKIP_ANNOTATIONS.stream().noneMatch(field::isAnnotationPresent))
+				.flatMap(field ->
+				{
+					field.setAccessible(true);
+					
+					try
+					{
+						@NullOr Object value = field.get(null);
+						if (value == null) { return Stream.empty(); }
+						
+						if (value instanceof Collection && rules.isAggregatingFromCollections())
+						{
+							return ((Collection<?>) value).stream()
+								.flatMap(element -> Cast.unsafe().generic(type, element).stream())
+								.map(element -> new Constants.Impl<>(source, field.getName(), element, true));
+						}
+						else
+						{
+							return Cast.unsafe().generic(type, value)
+								.map(element -> new Constants.Impl<>(source, field.getName(), element, false))
+								.stream();
+						}
+					}
+					catch (Exception e) { throw new AggregationException(e); }
+				});
 		}
 	}
 }

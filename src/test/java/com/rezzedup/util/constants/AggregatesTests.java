@@ -22,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @DisplayName("Aggregates")
 public class AggregatesTests
 {
+	@SuppressWarnings("unused")
 	public static class SimpleData
 	{
 		static final String FIRST_NAME = "John";
@@ -84,8 +85,10 @@ public class AggregatesTests
 		@DisplayName("is equivalent to re-aggregating 'NAMES' with same parameters")
 		public void namesAreEquivalent()
 		{
-			List<?> alsoNames =
-			Aggregates.list(SimpleData.class, TypeCapture.type(String.class), MatchRules.of().all("NAME"));
+			List<?> alsoNames = Aggregates.from(SimpleData.class)
+				.constantsOfType(String.class)
+				.matching(MatchRules.of().all("NAME"))
+				.toList();
 			
 			assertEquals(SimpleData.NAMES, alsoNames);
 		}
@@ -110,11 +113,10 @@ public class AggregatesTests
 		@DisplayName("has 5 rude 'WORD' elements")
 		public void rudeWords()
 		{
-			Set<String> rude = Aggregates.set(
-				SimpleData.class,
-				TypeCapture.type(String.class),
-				MatchRules.of().any("WORD").not("GREETING", "MAGIC").collections(true)
-			);
+			Set<String> rude = Aggregates.from(SimpleData.class)
+				.constantsOfType(TypeCapture.type(String.class))
+				.matching(MatchRules.of().any("WORD").not("GREETING", "MAGIC").collections(true))
+				.toSet();
 			
 			assertEquals(5, rude.size());
 			
@@ -130,13 +132,14 @@ public class AggregatesTests
 		public void miscAggregates()
 		{
 			// both NUMBER's
-			List<Integer> numbers = Aggregates.list(SimpleData.class, TypeCapture.type(Integer.class));
+			List<Integer> numbers = Aggregates.from(SimpleData.class).constantsOfType(Integer.class).toList();
 			assertEquals(2, numbers.size());
 			
 			// CURSED_NUMBER + all 3 CURSE_WORDS
-			List<?> curses = Aggregates.list(
-				SimpleData.class, TypeCapture.any(), MatchRules.of().all("CURSE").collections(true)
-			);
+			List<?> curses = Aggregates.from(SimpleData.class)
+				.constantsOfType(TypeCapture.any())
+				.matching(MatchRules.of().all("CURSE").collections(true))
+				.toList();
 			
 			assertEquals(4, curses.size());
 		}

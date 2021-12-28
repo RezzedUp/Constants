@@ -75,6 +75,6 @@ public class Primitives
 	 */
 	public static boolean isBoxed(@NullOr Object object)
 	{
-		return object != null && boxedTypes().contains(object.getClass());
+		return object != null && BOX_TO_PRIMITIVE.containsKey(object.getClass());
 	}
 }

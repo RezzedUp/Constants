@@ -35,6 +35,12 @@ public class Constants
 			&& Modifier.isFinal(field.getModifiers());
 	}
 	
+	public static ConstantStream in(Class<?> source)
+	{
+		Objects.requireNonNull(source, "source");
+		return () -> source;
+	}
+	
 	/**
 	 * Streams all the constants of a specific class.
 	 *
@@ -44,6 +50,7 @@ public class Constants
 	 * @return	a stream containing all constant fields from the provided class
 	 * @see #isConstant(Field)
 	 */
+	@Deprecated(forRemoval = true)
 	public static Stream<Field> all(Class<?> clazz)
 	{
 		Objects.requireNonNull(clazz, "clazz");
@@ -58,8 +65,78 @@ public class Constants
 	 * @return	a stream containing public constant fields from the provided class
 	 * @see #isConstant(Field)
 	 */
+	@Deprecated(forRemoval = true)
 	public static Stream<Field> accessible(Class<?> clazz)
 	{
 		return all(clazz).filter(field -> field.canAccess(null));
+	}
+	
+	@FunctionalInterface
+	public interface ConstantStream
+	{
+		Class<?> source();
+		
+		default Stream<Field> streamAllFields()
+		{
+			return Arrays.stream(source().getDeclaredFields()).filter(Constants::isConstant);
+		}
+		
+		default Stream<Field> streamPublicFields()
+		{
+			return streamAllFields().filter(field -> Modifier.isPublic(field.getModifiers()));
+		}
+		
+		private static Stream<Constant<?>> fieldsToConstants(Class<?> source, Stream<Field> fields)
+		{
+			return fields.map(field ->
+				{
+					try
+					{
+						@NullOr Object value = field.get(source);
+						if (value == null) { return null; }
+						return new Impl<>(source, field.getName(), value, false);
+					}
+					catch (IllegalAccessException e) { return (Constant<?>) null; }
+				})
+				.filter(Objects::nonNull);
+		}
+		
+		default Stream<Constant<?>> streamAllConstants()
+		{
+			return fieldsToConstants(source(), streamAllFields());
+		}
+		
+		default Stream<Constant<?>> streamPublicConstants()
+		{
+			return fieldsToConstants(source(), streamPublicFields());
+		}
+	}
+	
+	static final class Impl<T> implements Constant<T>
+	{
+		private final Class<?> source;
+		private final String name;
+		private final T value;
+		private final boolean isFromCollection;
+		
+		Impl(Class<?> source, String name, T value, boolean isFromCollection)
+		{
+			this.source = source;
+			this.name = name;
+			this.value = value;
+			this.isFromCollection = isFromCollection;
+		}
+		
+		@Override
+		public Class<?> source() { return source; }
+		
+		@Override
+		public String name() { return name; }
+		
+		@Override
+		public T value() { return value; }
+		
+		@Override
+		public boolean isFromCollection() { return isFromCollection; }
 	}
 }
