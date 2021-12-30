@@ -48,11 +48,12 @@ public class Primitives
 	}
 	
 	/**
-	 * Gets all directly primitive types.
+	 * Gets all directly-primitive types. These are unboxed, purely-primitive types.
 	 *
-	 * @return an immutable set containing all primitive types
+	 * @return an immutable set containing all directly-primitive types
+	 * @see #boxedTypes()
 	 */
-	public static Set<Class<?>> primitiveTypes()
+	public static Set<Class<?>> unboxedPrimitiveTypes()
 	{
 		return PRIMITIVE_TO_BOX.keySet();
 	}

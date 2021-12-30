@@ -22,7 +22,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
@@ -39,125 +38,22 @@ public class Aggregates
 		Set.of(AggregatedResult.class, NotAggregated.class);
 	
 	/**
-	 * Visits all constants of a specific type matching the provided rules.
+	 * Aggregates constants from the provided source class.
 	 *
-	 * @param source	the class containing constants
-	 * @param type		type token of the type
-	 * @param rules		criteria for filtering constants
-	 * @param consumer	constant consumer
-	 * @param <T>		the type
+	 * @param source	the source class
+	 * @return	next step: pending constant type
 	 */
-	@Deprecated(forRemoval = true)
-	public static <T> void visit(Class<?> source, TypeCompatible<T> type, MatchRules rules, Consumer<Constant<T>> consumer)
+	public static Pending.ConstantType from(Class<?> source)
 	{
-		Objects.requireNonNull(consumer, "consumer");
-		from(source).constantsOfType(type).matching(rules).stream().forEach(consumer);
-	}
-	
-	private static <T, C extends Collection<T>> C collect(Class<?> source, TypeCompatible<T> type, MatchRules rules, Supplier<C> constructor)
-	{
-		Objects.requireNonNull(constructor, "constructor");
-		return from(source).constantsOfType(type).matching(rules).stream()
-			.map(Constant::value).collect(Collectors.toCollection(constructor));
+		return new Aggregator<>(source);
 	}
 	
 	/**
-	 * Collects all constants of a specific type matching the provided rules into an immutable {@code Set}.
+	 * Initiates constant aggregation from "this" class (whichever class happens to be calling this method).
+	 * Constants are sourced from the class found directly beneath the {@code Aggregates} class on the call stack.
 	 *
-	 * @param source		the class containing constants
-	 * @param type			type token of the type
-	 * @param rules			criteria for filtering constants
-	 * @param constructor	new {@code Set} constructor
-	 * @param <T>			the type
-	 * @return	an immutable copy of the constructed set containing the matched constants
+	 * @return	next step: pending constant type
 	 */
-	@Deprecated(forRemoval = true)
-	public static <T> Set<T> set(Class<?> source, TypeCompatible<T> type, MatchRules rules, Supplier<Set<T>> constructor)
-	{
-		return Set.copyOf(collect(source, type, rules, constructor));
-	}
-	
-	/**
-	 * Collects all constants of a specific type matching the provided rules into an immutable {@code Set}.
-	 *
-	 * @param source	the class containing constants
-	 * @param type		type token of the type
-	 * @param rules		criteria for filtering constants
-	 * @param <T>		the type
-	 * @return an immutable set containing the matched constants
-	 */
-	@Deprecated(forRemoval = true)
-	public static <T> Set<T> set(Class<?> source, TypeCompatible<T> type, MatchRules rules)
-	{
-		return set(source, type, rules, HashSet::new);
-	}
-	
-	/**
-	 * Collects all constants of a specific type into an immutable {@code Set}.
-	 * Constants within collections will <b>not</b> be aggregated.
-	 *
-	 * @param source	the class containing constants
-	 * @param type		type token of the type
-	 * @param <T>		the type
-	 * @return	an immutable set containing the matched constants
-	 */
-	@Deprecated(forRemoval = true)
-	public static <T> Set<T> set(Class<?> source, TypeCompatible<T> type)
-	{
-		return set(source, type, MatchRules.DEFAULT);
-	}
-	
-	/**
-	 * Collects all constants of a specific type matching the provided rules into an immutable {@code List}.
-	 *
-	 * @param source		the class containing constants
-	 * @param type			type token of the type
-	 * @param rules			criteria for filtering constants
-	 * @param constructor	new {@code List} constructor
-	 * @param <T>			the type
-	 * @return	an immutable copy of the constructed list containing the matched constants
-	 */
-	@Deprecated(forRemoval = true)
-	public static <T> List<T> list(Class<?> source, TypeCompatible<T> type, MatchRules rules, Supplier<List<T>> constructor)
-	{
-		return List.copyOf(collect(source, type, rules, constructor));
-	}
-	
-	/**
-	 * Collects all constants of a specific type matching the provided rules into an immutable {@code List}.
-	 *
-	 * @param source	the class containing constants
-	 * @param type		type token of the type
-	 * @param rules		criteria for filtering constants
-	 * @param <T>		the type
-	 * @return	an immutable list containing the matched constants
-	 */
-	@Deprecated(forRemoval = true)
-	public static <T> List<T> list(Class<?> source, TypeCompatible<T> type, MatchRules rules)
-	{
-		return list(source, type, rules, ArrayList::new);
-	}
-	
-	/**
-	 * Collects all constants of a specific type into an immutable {@code List}.
-	 * Constants within collections will <b>not</b> be aggregated.
-	 *
-	 * @param source	the class containing constants
-	 * @param type		type token of the type
-	 * @param <T>		the type
-	 * @return	an immutable list containing the matched constants
-	 */
-	@Deprecated(forRemoval = true)
-	public static <T> List<T> list(Class<?> source, TypeCompatible<T> type)
-	{
-		return list(source, type, MatchRules.DEFAULT);
-	}
-	
-	public static Pending.ConstantType from(Class<?> sourceClass)
-	{
-		return new Aggregator<>(sourceClass);
-	}
-	
 	public static Pending.ConstantType fromThisClass()
 	{
 		for (StackTraceElement element : Thread.currentThread().getStackTrace())
@@ -175,36 +71,98 @@ public class Aggregates
 		throw new IllegalStateException("Could not resolve class");
 	}
 	
+	/**
+	 * A pending aggregation step.
+	 */
 	public interface Pending
 	{
+		/**
+		 * Step: provide the desired constant type to aggregate.
+		 */
 		interface ConstantType extends Pending
 		{
+			/**
+			 * Sets the type of constant to aggregate.
+			 *
+			 * @param type	generic type token
+			 * @param <T>	constant type
+			 * @return	next step: pending aggregation
+			 */
 			<T> Aggregation<T> constantsOfType(TypeCompatible<T> type);
 			
+			/**
+			 * Sets the type of constant to aggregate.
+			 *
+			 * @param clazz		class of constant type
+			 * @param <T>		constant type
+			 * @return	next step: pending aggregation
+			 */
 			default <T> Aggregation<T> constantsOfType(Class<T> clazz)
 			{
 				return constantsOfType(TypeCapture.type(clazz));
 			}
 		}
 		
+		/**
+		 * Step: update settings further or aggregate constants.
+		 *
+		 * @param <T>	constant type
+		 */
 		interface Aggregation<T> extends Pending
 		{
+			/**
+			 * Sets the match rules, overwriting any existing rules.
+			 *
+			 * @param rules		match rules
+			 * @return	self (for method chaining)
+			 */
 			Aggregation<T> matching(MatchRules rules);
 			
+			/**
+			 * Updates the match rules, appending to any previously set rules.
+			 *
+			 * @param match		rules update operation
+			 * @return	self (for method chaining)
+			 */
 			Aggregation<T> matching(UnaryOperator<MatchRules> match);
 			
+			/**
+			 * Streams all constants matching the specified type and previously-defined rules.
+			 *
+			 * @return	stream of all applicable constants
+			 */
 			Stream<Constant<T>> stream();
 			
+			/**
+			 * Collects all constant values matching the specified type and previously-defined rules
+			 * directly into the collection provided by the constructor.
+			 *
+			 * @param constructor	collection constructor
+			 * @param <C>			collection type
+			 * @return	collection containing all applicable constant values
+			 */
 			default <C extends Collection<T>> C toCollection(Supplier<C> constructor)
 			{
 				return stream().map(Constant::value).collect(Collectors.toCollection(constructor));
 			}
 			
+			/**
+			 * Creates an immutable list containing all constant values matching the specified type
+			 * and previously-defined rules.
+			 *
+			 * @return	immutable list containing all applicable constant values
+			 */
 			default List<T> toList()
 			{
 				return List.copyOf(toCollection(ArrayList::new));
 			}
 			
+			/**
+			 * Creates an immutable set containing all constant values matching the specified type
+			 * and previously-defined rules.
+			 *
+			 * @return	immutable set containing all applicable constant values
+			 */
 			default Set<T> toSet()
 			{
 				return Set.copyOf(toCollection(HashSet::new));

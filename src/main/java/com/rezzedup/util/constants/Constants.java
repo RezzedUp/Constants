@@ -35,6 +35,12 @@ public class Constants
 			&& Modifier.isFinal(field.getModifiers());
 	}
 	
+	/**
+	 * Get the constants contained within the provided class.
+	 *
+	 * @param source	the source class
+	 * @return	an entrypoint for streaming the class's constants
+	 */
 	public static ConstantStream in(Class<?> source)
 	{
 		Objects.requireNonNull(source, "source");
@@ -42,45 +48,37 @@ public class Constants
 	}
 	
 	/**
-	 * Streams all the constants of a specific class.
-	 *
-	 * <p><b>Note:</b> fields in the stream may not necessarily be accessible.</p>
-	 *
-	 * @param clazz		the class containing constants
-	 * @return	a stream containing all constant fields from the provided class
-	 * @see #isConstant(Field)
+	 * Generates streams containing constants from a specific source class.
 	 */
-	@Deprecated(forRemoval = true)
-	public static Stream<Field> all(Class<?> clazz)
-	{
-		Objects.requireNonNull(clazz, "clazz");
-		return Arrays.stream(clazz.getDeclaredFields()).filter(Constants::isConstant);
-	}
-	
-	/**
-	 * Streams accessible {@code public} constants
-	 * of a specific class.
-	 *
-	 * @param clazz		the class containing constants
-	 * @return	a stream containing public constant fields from the provided class
-	 * @see #isConstant(Field)
-	 */
-	@Deprecated(forRemoval = true)
-	public static Stream<Field> accessible(Class<?> clazz)
-	{
-		return all(clazz).filter(field -> field.canAccess(null));
-	}
-	
 	@FunctionalInterface
 	public interface ConstantStream
 	{
+		/**
+		 * Provides the source class, from which constants are retrieved.
+		 *
+		 * @return	the source class
+		 */
 		Class<?> source();
 		
+		/**
+		 * Streams all the constant fields from the source class.
+		 *
+		 * <p><b>Note:</b> fields in the stream may not necessarily be accessible.</p>
+		 *
+		 * @return	a stream containing all constant fields
+		 * @see #isConstant(Field)
+		 */
 		default Stream<Field> streamAllFields()
 		{
 			return Arrays.stream(source().getDeclaredFields()).filter(Constants::isConstant);
 		}
 		
+		/**
+		 * Streams accessible {@code public} constant fields from the source class.
+		 *
+		 * @return	a stream containing public constant fields
+		 * @see #isConstant(Field)
+		 */
 		default Stream<Field> streamPublicFields()
 		{
 			return streamAllFields().filter(field -> Modifier.isPublic(field.getModifiers()));
@@ -90,22 +88,33 @@ public class Constants
 		{
 			return fields.map(field ->
 				{
+					field.setAccessible(true);
+					
 					try
 					{
 						@NullOr Object value = field.get(source);
-						if (value == null) { return null; }
-						return new Impl<>(source, field.getName(), value, false);
+						return (value == null) ? null : new Impl<>(source, field.getName(), value, false);
 					}
 					catch (IllegalAccessException e) { return (Constant<?>) null; }
 				})
 				.filter(Objects::nonNull);
 		}
 		
+		/**
+		 * Streams all constants from the source class.
+		 *
+		 * @return	a stream containing all constants
+		 */
 		default Stream<Constant<?>> streamAllConstants()
 		{
 			return fieldsToConstants(source(), streamAllFields());
 		}
 		
+		/**
+		 * Streams accessible {@code public} constants from the source class.
+		 *
+		 * @return	a stream containing public constants
+		 */
 		default Stream<Constant<?>> streamPublicConstants()
 		{
 			return fieldsToConstants(source(), streamPublicFields());
