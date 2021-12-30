@@ -56,7 +56,7 @@ public abstract class TypeCapture<T> implements TypeCompatible<T>
 	 * Captures the type directly from a non-generic class.
 	 *
 	 * @param type	the class
-	 * @param <T>	non-generic type
+	 * @param <T> 	non-generic type
 	 * @return	the captured type
 	 */
 	public static <T> TypeCapture<T> type(Class<T> type)
@@ -81,7 +81,7 @@ public abstract class TypeCapture<T> implements TypeCompatible<T>
 	 * Converts an alternative compatible type token into a type captures.
 	 *
 	 * @param type	the compatible type token
-	 * @param <T>	generic type
+	 * @param <T> 	generic type
 	 * @return	the captured type
 	 */
 	public static <T> TypeCapture<T> type(TypeCompatible<T> type)
@@ -185,7 +185,7 @@ public abstract class TypeCapture<T> implements TypeCompatible<T>
 		
 		// All else fails.
 		throw new IllegalArgumentException(
-		"Unsupported type: " + type + " (" + type.getClass().getName() + ")"
+			"Unsupported type: " + type + " (" + type.getClass().getName() + ")"
 		);
 	}
 	

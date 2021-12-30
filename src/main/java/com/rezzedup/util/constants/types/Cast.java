@@ -26,9 +26,9 @@ public class Cast
 	/**
 	 * Attempts to cast an object into the specified type.
 	 *
-	 * @param type		type to cast into
+	 * @param type  	type to cast into
 	 * @param object	object to cast
-	 * @param <T>		the type
+	 * @param <T>   	the type
 	 * @return	the successfully cast object, otherwise empty
 	 */
 	@SuppressWarnings("unchecked")
@@ -42,7 +42,7 @@ public class Cast
 	 * Creates a function that attempts to cast objects into the specified type.
 	 *
 	 * @param type	type to cast into
-	 * @param <T>	the type
+	 * @param <T> 	the type
 	 * @return	a function that casts objects into the specified type
 	 * @see #as(Class, Object)
 	 */
@@ -55,9 +55,9 @@ public class Cast
 	/**
 	 * Attempts to cast an {@code Optional}'s contents into the specified type.
 	 *
-	 * @param type		type to cast into
+	 * @param type    	type to cast into
 	 * @param optional	optional to cast
-	 * @param <T>		the type
+	 * @param <T>     	the type
 	 * @return	a present optional if its contents were successfully cast, otherwise empty
 	 */
 	@SuppressWarnings("unchecked")
@@ -98,9 +98,9 @@ public class Cast
 		 * <p><b>Warning:</b> since generic type nformation is erased, casting will "succeed"
 		 * for <b>any</b> instance of a generic class.</p>
 		 *
-		 * @param type		generic type to cast into
+		 * @param type  	generic type to cast into
 		 * @param object	object to cast
-		 * @param <T>		the generic type
+		 * @param <T>   	the generic type
 		 * @return	the potentially cast object, otherwise empty
 		 */
 		@SuppressWarnings("unchecked")
@@ -133,9 +133,9 @@ public class Cast
 		 * <p><b>Warning:</b> since generic type information is erased, casting will "succeed"
 		 * for <b>any</b> instance of a generic class.</p>
 		 *
-		 * @param type		generic type to cast into
+		 * @param type    	generic type to cast into
 		 * @param optional	optional to cast
-		 * @param <T>		the generic type
+		 * @param <T>     	the generic type
 		 * @return	a present Optional if its contents were successfully cast, otherwise empty
 		 */
 		@SuppressWarnings("unchecked")

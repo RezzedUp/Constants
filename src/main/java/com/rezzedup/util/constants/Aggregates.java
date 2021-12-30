@@ -84,8 +84,8 @@ public class Aggregates
 			/**
 			 * Sets the type of constant to aggregate.
 			 *
-			 * @param type	generic type token
-			 * @param <T>	constant type
+			 * @param type 	generic type token
+			 * @param <T>  	constant type
 			 * @return	next step: pending aggregation
 			 */
 			<T> Aggregation<T> constantsOfType(TypeCompatible<T> type);
@@ -93,8 +93,8 @@ public class Aggregates
 			/**
 			 * Sets the type of constant to aggregate.
 			 *
-			 * @param clazz		class of constant type
-			 * @param <T>		constant type
+			 * @param clazz 	class of constant type
+			 * @param <T>   	constant type
 			 * @return	next step: pending aggregation
 			 */
 			default <T> Aggregation<T> constantsOfType(Class<T> clazz)
@@ -113,7 +113,7 @@ public class Aggregates
 			/**
 			 * Sets the match rules, overwriting any existing rules.
 			 *
-			 * @param rules		match rules
+			 * @param rules 	match rules
 			 * @return	self (for method chaining)
 			 */
 			Aggregation<T> matching(MatchRules rules);
@@ -121,7 +121,7 @@ public class Aggregates
 			/**
 			 * Updates the match rules, appending to any previously set rules.
 			 *
-			 * @param match		rules update operation
+			 * @param match 	rules update operation
 			 * @return	self (for method chaining)
 			 */
 			Aggregation<T> matching(UnaryOperator<MatchRules> match);
@@ -138,7 +138,7 @@ public class Aggregates
 			 * directly into the collection provided by the constructor.
 			 *
 			 * @param constructor	collection constructor
-			 * @param <C>			collection type
+			 * @param <C>        	collection type
 			 * @return	collection containing all applicable constant values
 			 */
 			default <C extends Collection<T>> C toCollection(Supplier<C> constructor)
