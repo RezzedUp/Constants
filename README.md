@@ -1,4 +1,4 @@
-# Constants
+# 🗜️ Constants
 
 [![](https://img.shields.io/maven-central/v/com.rezzedup.util/constants?color=ok&label=Maven%20Central)](https://search.maven.org/artifact/com.rezzedup.util/constants "Maven Central")
 [![](https://img.shields.io/badge/License-MPL--2.0-blue)](./LICENSE "Project License: MPL-2.0")
@@ -8,14 +8,17 @@
 Utilities for `static final` constants. Use 'em like enums.
 
 ```java
+// Imagine you have constants of some kind of complicated generic type.
 public class Example
 {
     public static final ComplexObject<String> STRING_CONSTANT =
         ComplexObject.builder("abc").example("xyz").enabled(true).build();
     
+    // This one has an integer... the last one had a string!
     public static final ComplexObject<Integer> INTEGER_CONSTANT =
         ComplexObject.builder(1).example(-1).enabled(true).build();
     
+    // Well, this one won't be aggregated.
     @NotAggregated
     public static final ComplexObject<Float> FLOAT_CONSTANT =
         ComplexObject.builder(1.0F).example(-1.0F).enabled(false).build();
@@ -23,9 +26,14 @@ public class Example
     public static final ComplexObject<Double> DOUBLE_CONSTANT =
         ComplexObject.builder(1.0).example(-1.0).enabled(true).build();
     
+    // And here we go!
+    // All the constants are collected into this immutable list, 
+    // and their generic type is preserved.
     @AggregatedResult
     public static final List<ComplexObject<?>> VALUES =
-        Aggregates.list(Example.class, new TypeCapture<ComplexObject<?>>() {});
+        Aggregates.fromThisClass()
+            .constantsOfType(new TypeCapture<ComplexObject<?>>() {})
+            .toList();
 }
 ```
 
