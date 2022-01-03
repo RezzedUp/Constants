@@ -17,30 +17,30 @@ import java.util.Set;
  */
 public class Wildcards
 {
-	private Wildcards() { throw new UnsupportedOperationException(); }
-	
-	/**
-	 * Wildcard {@code Class} type capture.
-	 */
-	public static final TypeCapture<Class<?>> CLASS = new TypeCapture<>() { };
-	
-	/**
-	 * Wildcard {@code List} type capture.
-	 */
-	public static final TypeCapture<List<?>> LIST = new TypeCapture<>() { };
-	
-	/**
-	 * Wildcard {@code Set} type capture.
-	 */
-	public static final TypeCapture<Set<?>> SET = new TypeCapture<>() { };
-	
-	/**
-	 * Wildcard {@code Collection} type capture.
-	 */
-	public static final TypeCapture<Collection<?>> COLLECTION = new TypeCapture<>() { };
-	
-	/**
-	 * Wildcard {@code Map} type capture.
-	 */
-	public static final TypeCapture<Map<?, ?>> MAP = new TypeCapture<>() { };
+    private Wildcards() { throw new UnsupportedOperationException(); }
+    
+    /**
+     * Wildcard {@code Class} type capture.
+     */
+    public static final TypeCapture<Class<?>> CLASS = new TypeCapture<>() { };
+    
+    /**
+     * Wildcard {@code List} type capture.
+     */
+    public static final TypeCapture<List<?>> LIST = new TypeCapture<>() { };
+    
+    /**
+     * Wildcard {@code Set} type capture.
+     */
+    public static final TypeCapture<Set<?>> SET = new TypeCapture<>() { };
+    
+    /**
+     * Wildcard {@code Collection} type capture.
+     */
+    public static final TypeCapture<Collection<?>> COLLECTION = new TypeCapture<>() { };
+    
+    /**
+     * Wildcard {@code Map} type capture.
+     */
+    public static final TypeCapture<Map<?, ?>> MAP = new TypeCapture<>() { };
 }

@@ -12,15 +12,15 @@ import java.lang.reflect.Type;
 /**
  * Conversion layer for alternative type token implementations.
  *
- * @param <T>	the generic type
+ * @param <T>   the generic type
  */
 @FunctionalInterface
 public interface TypeCompatible<T>
 {
-	/**
-	 * Gets the underlying type.
-	 *
-	 * @return	the type
-	 */
-	Type type();
+    /**
+     * Gets the underlying type.
+     *
+     * @return the type
+     */
+    Type type();
 }
