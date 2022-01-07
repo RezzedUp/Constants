@@ -16,7 +16,7 @@
   <licenses>
     <license>
       <name>Mozilla Public License Version 2.0</name>
-      <url>http://mozilla.org/MPL/2.0</url>
+      <url>https://mozilla.org/MPL/2.0</url>
     </license>
   </licenses>
   
@@ -30,7 +30,7 @@
   <scm>
     <connection>scm:git:git://github.com/RezzedUp/Constants.git</connection>
     <developerConnection>scm:git:ssh://github.com:RezzedUp/Constants.git</developerConnection>
-    <url>http://github.com/RezzedUp/Constants</url>
+    <url>https://github.com/RezzedUp/Constants</url>
   </scm>
   
   <issueManagement>
@@ -90,7 +90,7 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <version>3.0.0-M5</version>
       </plugin>
-      <!-- Add license header -->
+      <!-- Add license headers -->
       <plugin>
         <groupId>com.mycila</groupId>
         <artifactId>license-maven-plugin</artifactId>

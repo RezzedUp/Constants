@@ -98,7 +98,7 @@ public class Cast
         /**
          * Attempts to cast an object into the specified generic type.
          *
-         * <p><b>Warning:</b> since generic type nformation is erased, casting will "succeed"
+         * <p><b>Warning:</b> since generic type information is erased, casting will "succeed"
          * for <b>any</b> instance of a generic class.</p>
          *
          * @param type      generic type to cast into
